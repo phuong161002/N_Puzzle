@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="Algorithms\AStar.cs" />
     <Compile Include="Algorithms\BFS.cs" />
+    <Compile Include="Algorithms\Demo.cs" />
     <Compile Include="Algorithms\DFS.cs" />
     <Compile Include="Algorithms\ISolver.cs" />
     <Compile Include="Enum.cs" />

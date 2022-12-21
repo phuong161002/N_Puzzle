@@ -26,8 +26,8 @@ namespace N_Puzzle
         public Node startNode;
         public Node currentNode;
         public Node goalNode;
-        private Task runningTask;
-        private CancellationTokenSource taskStop;
+        private Thread solveThread;
+        private ISolver solver;
 
         public MainForm()
         {
@@ -145,36 +145,26 @@ namespace N_Puzzle
             }
         }
 
-        private Task Solve(Node start, Node goal)
+        private void Solve(Node start, Node goal)
         {
             IsOutOfMem = false;
-            label1.Text = "Solving...";
-            return Task.Factory.StartNew(() =>
+            Stopwatch stopWatch = Stopwatch.StartNew();
+
+            solver = new Demo();
+            Node endNode = solver.Solve(start, goal);
+
+            if (!IsOutOfMem)
             {
-                Stopwatch stopWatch = Stopwatch.StartNew();
-                BFS bfs = new BFS(start, goal);
-                Node node = bfs.Solve(start, goal);
+                List<Node> listNode = Util.Trace(endNode);
+
                 label1.Text = $"Elapsed Time: {stopWatch.ElapsedMilliseconds}ms";
-                return node;
-            }).ContinueWith(task =>
-            {
-                if (!IsOutOfMem)
-                {
-                    var moves = Util.Trace(task.Result);
-                    ShowMove(moves);
-                }
-                else
-                {
-                    label1.Text = "Out of memory! Can not solve";
-                    currentNode = new Node(startState);
-                    UpdateGameView(currentNode.state);
-                }
-            }).ContinueWith(task =>
-            {
-                currentNode = new Node(currentNode.state);
-                UpdateGameView(currentNode.state);
-                GC.Collect();
-            });
+
+                ShowMove(listNode);
+            }
+
+            currentNode = new Node(currentNode.state);
+
+            UpdateGameView(currentNode.state);
         }
 
         private void ShowMove(List<Node> listNode)
@@ -189,7 +179,12 @@ namespace N_Puzzle
 
         private void btnSolve_Click(object sender, EventArgs e)
         {
-            runningTask = Solve(currentNode, goalNode);
+            solveThread = new Thread(() =>
+            {
+                Solve(currentNode, goalNode);
+            })
+            { IsBackground = true };
+            solveThread.Start();
         }
 
         private void btnShuffer_Click(object sender, EventArgs e)
