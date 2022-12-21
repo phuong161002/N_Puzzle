@@ -13,4 +13,11 @@ namespace N_Puzzle
         Left,
         Right
     }
+
+    public enum Solver
+    {
+        AStar,
+        BFS, 
+        DFS
+    }
 }
