@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{CD571FA4-8BC1-4BC9-AF3D-02B08ABD0DF2}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <RootNamespace>N_Puzzle</RootNamespace>
     <AssemblyName>N_Puzzle</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
@@ -32,6 +32,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -46,6 +49,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Algorithms\AStar.cs" />
+    <Compile Include="Algorithms\BFS.cs" />
+    <Compile Include="Algorithms\DFS.cs" />
+    <Compile Include="Algorithms\ISolver.cs" />
+    <Compile Include="Enum.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -54,6 +62,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Node.cs" />
+    <Compile Include="Settings.cs" />
+    <Compile Include="Util.cs" />
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -65,6 +76,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -78,6 +90,39 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\1.JPG" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\2.JPG" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\3.JPG" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\4.JPG" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\5.JPG" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\6.JPG" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\7.JPG" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\8.JPG" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\9.JPG" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\null.JPG" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\original.JPG" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
