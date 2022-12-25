@@ -164,7 +164,7 @@ namespace N_Puzzle
             }
             
 
-            currentNode = new Node(currentNode.state);
+            currentNode = new Node(startNode.state);
             UpdateGameView(currentNode.state);
         }
 
