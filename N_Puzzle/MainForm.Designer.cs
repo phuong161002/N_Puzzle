@@ -42,12 +42,11 @@ namespace N_Puzzle
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
-            this.btnSolve = new System.Windows.Forms.Button();
-            this.tbShufferItters = new System.Windows.Forms.TextBox();
             this.btnShuffer = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
+            this.tbShufferItters = new System.Windows.Forms.TextBox();
+            this.btnSolve = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
             timer = new System.Windows.Forms.Timer(this.components);
             this.grBoxDisplay.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox9)).BeginInit();
@@ -61,11 +60,6 @@ namespace N_Puzzle
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // timer
-            // 
-            timer.Enabled = true;
-            timer.Tick += new System.EventHandler(this.timer_Tick);
             // 
             // grBoxDisplay
             // 
@@ -169,7 +163,6 @@ namespace N_Puzzle
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.button1);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.btnSolve);
@@ -182,23 +175,22 @@ namespace N_Puzzle
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Control";
             // 
-            // label2
+            // btnShuffer
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(23, 294);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(32, 13);
-            this.label2.TabIndex = 4;
-            this.label2.Text = "Ram ";
+            this.btnShuffer.Location = new System.Drawing.Point(18, 20);
+            this.btnShuffer.Name = "btnShuffer";
+            this.btnShuffer.Size = new System.Drawing.Size(82, 37);
+            this.btnShuffer.TabIndex = 0;
+            this.btnShuffer.Text = "Shuffer";
+            this.btnShuffer.UseVisualStyleBackColor = true;
+            this.btnShuffer.Click += new System.EventHandler(this.btnShuffer_Click);
             // 
-            // label1
+            // tbShufferItters
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(23, 265);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(77, 13);
-            this.label1.TabIndex = 3;
-            this.label1.Text = "Elapsed Time: ";
+            this.tbShufferItters.Location = new System.Drawing.Point(106, 29);
+            this.tbShufferItters.Name = "tbShufferItters";
+            this.tbShufferItters.Size = new System.Drawing.Size(100, 20);
+            this.tbShufferItters.TabIndex = 1;
             // 
             // btnSolve
             // 
@@ -210,32 +202,28 @@ namespace N_Puzzle
             this.btnSolve.UseVisualStyleBackColor = true;
             this.btnSolve.Click += new System.EventHandler(this.btnSolve_Click);
             // 
-            // tbShufferItters
+            // label1
             // 
-            this.tbShufferItters.Location = new System.Drawing.Point(106, 29);
-            this.tbShufferItters.Name = "tbShufferItters";
-            this.tbShufferItters.Size = new System.Drawing.Size(100, 20);
-            this.tbShufferItters.TabIndex = 1;
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(23, 265);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(77, 13);
+            this.label1.TabIndex = 3;
+            this.label1.Text = "Elapsed Time: ";
             // 
-            // btnShuffer
+            // timer
             // 
-            this.btnShuffer.Location = new System.Drawing.Point(18, 20);
-            this.btnShuffer.Name = "btnShuffer";
-            this.btnShuffer.Size = new System.Drawing.Size(82, 37);
-            this.btnShuffer.TabIndex = 0;
-            this.btnShuffer.Text = "Shuffer";
-            this.btnShuffer.UseVisualStyleBackColor = true;
-            this.btnShuffer.Click += new System.EventHandler(this.btnShuffer_Click);
+            timer.Enabled = true;
+            timer.Tick += new System.EventHandler(this.timer_Tick);
             // 
-            // button1
+            // label2
             // 
-            this.button1.Location = new System.Drawing.Point(18, 171);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(82, 37);
-            this.button1.TabIndex = 5;
-            this.button1.Text = "Clean RAm";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(23, 294);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(32, 13);
+            this.label2.TabIndex = 4;
+            this.label2.Text = "Ram ";
             // 
             // MainForm
             // 
@@ -280,7 +268,6 @@ namespace N_Puzzle
         private System.Windows.Forms.TextBox tbShufferItters;
         private System.Windows.Forms.Button btnShuffer;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Button button1;
     }
 }
 

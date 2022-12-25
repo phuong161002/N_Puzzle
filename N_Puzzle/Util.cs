@@ -39,8 +39,6 @@ namespace N_Puzzle
             return false;
         }
 
-
-
         public static Node Move(Node currentNode, MoveDirection direction)
         {
             int[] currentState = (int[])currentNode.state.Clone();
