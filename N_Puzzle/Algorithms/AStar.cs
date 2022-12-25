@@ -35,30 +35,45 @@ namespace N_Puzzle.Algorithms
     {
       Node currentNode = new Node(start.state);
 
-
-      Console.WriteLine($"currentNode: {currentNode.state[7]}");
       while (!Util.IsGoalState(currentNode, goal) && !MainForm.IsOutOfMem)
       {
         Node temp = null;
-        while (!Util.IsGoalState(currentNode, goal) && !MainForm.IsOutOfMem)
+
+        for (int i = 0; i < 4; i++)
         {
-          for (int i = 0; i < 4; i++)
+          if (Util.TryMove(currentNode, (MoveDirection)i, out Node nextNode))
           {
-            if (Util.TryMove(currentNode, (MoveDirection)i, out Node nextNode))
+            CalculateCost(nextNode);
+            Console.WriteLine($"cost: {nextNode.cost}");
+            Console.WriteLine($"depth: {nextNode.depth}");
+            Console.WriteLine($"i: {i}");
+            for (int j = 0; j < nextNode.state.Length; j++)
             {
-              CalculateCost(ref nextNode);
-              if (temp == null)
-              {
-                temp = nextNode;
-                continue;
-              }
-              else
-                temp = CompareNode(temp, nextNode);
+              Console.WriteLine($"nextNode demo, {nextNode.state[j]}");
             }
+            if (temp == null)
+            {
+              temp = nextNode;
+              continue;
+            }
+            else
+              temp = CompareNode(temp, nextNode);
           }
         }
         currentNode = temp;
       }
+      for (int i = 0; i < goal.state.Length; i++)
+      {
+        Console.WriteLine($"goal, {goal.state[i]}");
+      }
+
+      for (int i = 0; i < currentNode.state.Length; i++)
+      {
+        Console.WriteLine($"current, {currentNode.state[i]}");
+      }
+
+      Console.WriteLine($"depth: {currentNode.depth}  generatedNode: {Node.generatedNode}");
+      Node.Reset();
       return currentNode;
     }
 
@@ -108,12 +123,12 @@ namespace N_Puzzle.Algorithms
       return heuristicCost;
     }
 
-    private int GetHeuristicCost(ref Node nextNode)
+    private int GetHeuristicCost(Node nextNode)
     {
       return GetManhattanDistanceCost(ref nextNode);
     }
 
-    private void CalculateCost(ref Node nextNode)
+    private void CalculateCost(Node nextNode)
     {
       if (nextNode.parent == null)
       {
@@ -123,7 +138,7 @@ namespace N_Puzzle.Algorithms
       {
         Costg = nextNode.depth + 1;
       }
-      Costh = GetHeuristicCost(ref nextNode);
+      Costh = GetHeuristicCost(nextNode);
 
       nextNode.cost = Costh + Costg;
     }
