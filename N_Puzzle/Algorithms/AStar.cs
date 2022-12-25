@@ -40,17 +40,25 @@ namespace N_Puzzle.Algorithms
       while (!Util.IsGoalState(currentNode, goal) && !MainForm.IsOutOfMem)
       {
         var myList = new List<KeyValuePair<int, Node>>();
-        Node temp;
-        for (int i = 0; i < 4; i++)
+        Node temp = null;
+        while (!Util.IsGoalState(currentNode, goal) && !MainForm.IsOutOfMem)
         {
-          if (Util.TryMove(currentNode, (MoveDirection)i, out Node nextNode))
+          for (int i = 0; i < 4; i++)
           {
-            CalculateCost(ref nextNode);
+            if (Util.TryMove(currentNode, (MoveDirection)i, out Node nextNode))
+            {
+              CalculateCost(ref nextNode);
+              if (temp == null)
+              {
+                temp = nextNode;
+                continue;
+              }
+              else
+                temp = CompareNode(temp, nextNode);
+            }
           }
-
-
-
         }
+        currentNode = temp;
       }
       return currentNode;
     }
