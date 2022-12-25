@@ -39,7 +39,6 @@ namespace N_Puzzle.Algorithms
       Console.WriteLine($"currentNode: {currentNode.state[7]}");
       while (!Util.IsGoalState(currentNode, goal) && !MainForm.IsOutOfMem)
       {
-        var myList = new List<KeyValuePair<int, Node>>();
         Node temp = null;
         while (!Util.IsGoalState(currentNode, goal) && !MainForm.IsOutOfMem)
         {
@@ -131,7 +130,7 @@ namespace N_Puzzle.Algorithms
 
     private Node CompareNode(Node node1, Node node2)
     {
-      if (node1.cost > node2.cost)
+      if (node1.cost >= node2.cost)
       {
         return node2;
       }
