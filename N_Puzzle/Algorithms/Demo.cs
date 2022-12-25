@@ -15,12 +15,25 @@ namespace N_Puzzle.Algorithms
 
         public Node Solve(Node start, Node goal)
         {
-            if(Util.TryMove(start, MoveDirection.Up, out Node nextNode))
+            Queue<Node> queue = new Queue<Node>();
+
+            Node currentNode = start;
+
+            while(!Util.IsGoalState(currentNode, goal) && !MainForm.IsOutOfMem)
             {
-                return nextNode;
+                for(int i = 0; i < 4; i++)
+                {
+                    if(Util.TryMove(currentNode, (MoveDirection)i, out Node nextNode))
+                    {
+                        queue.Enqueue(nextNode);
+                    }
+                }
+
+                currentNode = queue.Dequeue();
             }
 
-            return start;
+            Console.WriteLine($"depth: {currentNode.depth}   generatedNode: {Node.generatedNode}");
+            return currentNode;
         }
     }
 }
