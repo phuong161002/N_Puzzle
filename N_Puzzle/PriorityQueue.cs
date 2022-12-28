@@ -14,11 +14,11 @@ namespace N_Puzzle
             public T Data;
         }
 
-        private LinkedList<PQNode> DataList;
+        private LinkedList<PQNode> _items;
 
         public PriorityQueue()
         {
-            DataList = new LinkedList<PQNode>();
+            _items = new LinkedList<PQNode>();
         }
 
         public void Enqueue(T Data, int priority)
@@ -28,38 +28,56 @@ namespace N_Puzzle
                 Data = Data,
                 Priority = priority
             };
-
-
-            var current = DataList.First;
-            if(current == null)
+            if (Count == 0)
             {
-                DataList.AddFirst(newNode);
+                _items.AddLast(newNode);
                 return;
             }
-            while (current.Next != null)
+
+            var current = _items.First;
+            
+            while(current != null && current.Value.Priority >= priority)
             {
-                if(current.Value.Priority < priority)
-                {
-                    break;
-                }
                 current = current.Next;
             }
 
-            DataList.AddBefore(current, newNode);
+            if(current == null)
+            {
+                _items.AddLast(newNode);
+            }
+            else
+            {
+                _items.AddBefore(current, newNode);
+            }
         }
 
         public T Dequeue()
         {
-            var node = DataList.First.Value;
+            if (_items.Count == 0)
+            {
+                throw new InvalidOperationException("The queue is empty.");
+            }
 
-            DataList.RemoveFirst();
+            var node = _items.First.Value;
+
+            _items.RemoveFirst();
 
             return node.Data;
         }
 
+        public T Peek()
+        {
+            if(_items.Count == 0)
+            {
+                throw new InvalidOperationException("The queue is empty.");
+            }
+
+            return _items.First.Value.Data;
+        }
+
         public int Count
         {
-            get { return DataList.Count; }
+            get { return _items.Count; }
         }
 
         public bool IsEmpty
