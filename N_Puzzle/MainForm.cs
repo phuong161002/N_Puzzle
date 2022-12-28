@@ -153,6 +153,7 @@ namespace N_Puzzle
 
             solver = new Demo();
             Node endNode = solver.Solve(start, goal);
+            Console.WriteLine($"depth : {endNode.depth}  generatedNode: {Node.generatedNode}");
             Node.Reset();
             if (!IsOutOfMem)
             {
@@ -183,9 +184,11 @@ namespace N_Puzzle
             solveThread = new Thread(() =>
             {
                 btnSolve.Enabled = false;
+                btnShuffer.Enabled = false;
                 Solve(currentNode, goalNode);
                 GC.Collect();
                 btnSolve.Enabled = true;
+                btnShuffer.Enabled = true;
             })
             { IsBackground = true };
             solveThread.Start();
@@ -212,11 +215,17 @@ namespace N_Puzzle
                 IsOutOfMem = true;
             }
             label2.Text = $"Ram: {memUsaged} MB";
+            label3.Text = $"Generated Node: {Node.generatedNode}";
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
             GC.Collect();
+        }
+
+        private void label3_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
