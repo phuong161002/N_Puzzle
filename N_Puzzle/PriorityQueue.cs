@@ -31,8 +31,17 @@ namespace N_Puzzle
 
 
             var current = DataList.First;
-            while (current != null && current.Value.Priority >= priority)
+            if(current == null)
             {
+                DataList.AddFirst(newNode);
+                return;
+            }
+            while (current.Next != null)
+            {
+                if(current.Value.Priority < priority)
+                {
+                    break;
+                }
                 current = current.Next;
             }
 
