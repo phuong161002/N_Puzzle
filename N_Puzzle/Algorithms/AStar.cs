@@ -54,12 +54,11 @@ namespace N_Puzzle.Algorithms
             CalculateCost(nextNode);
             Console.WriteLine($"cost for nextNode: {nextNode.cost}");
             historyNode.Add(nextNode);
-            printf(nextNode.state);
+            Util.Print(nextNode.state, "NODE MOI");
             Console.WriteLine($"history node count: {historyNode.Count}");
           }
         }
         listNode.RemoveAt(listNode.Count - 1);
-        Console.WriteLine($"so j luc sau: {j}");
 
 
         for (int i = 0; i < historyNode.Count; i++)
@@ -80,13 +79,14 @@ namespace N_Puzzle.Algorithms
           if (historyNode[i].cost == historyNode[historyNode.Count - 1].cost)
           {
             listNode.Add(historyNode[i]);
+            printf(historyNode[i].state);
+            Console.WriteLine("__");
           }
         }
-        currentNode = listNode[j];
-        Console.WriteLine("GOAL");
-        printf(goal.state);
-        Console.WriteLine("START");
-        printf(start.state);
+        Console.WriteLine("__NEXT__");
+        printf(listNode[j].state);
+        currentNode = listNode[listNode.Count - 1];
+
       }
       printf(currentNode.state);
       Console.WriteLine($"depth: {currentNode.depth}  generatedNode: {Node.generatedNode}");
@@ -97,7 +97,7 @@ namespace N_Puzzle.Algorithms
 
 
 
-    private int GetManhattanDistanceCost(ref Node nextNode)
+    private int GetManhattanDistanceCost(Node nextNode)
     {
       int heuristicCost = 0;
       for (int i = 0; i < nextNode.state.Length; i++)
@@ -134,7 +134,6 @@ namespace N_Puzzle.Algorithms
         if (v == -1)
         {
           v = nextNode.state.Length - 1;
-          continue;
         }
         if (v != i) heuristicCost++;
       }
@@ -184,7 +183,7 @@ namespace N_Puzzle.Algorithms
     {
       for (int i = 0; i < arr.Length; i++)
       {
-        Console.Write($" {i} ");
+        Console.Write($" {arr[i]} ");
       }
     }
   }
