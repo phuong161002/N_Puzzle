@@ -1,4 +1,6 @@
-﻿using System;
+﻿using System.ComponentModel;
+using System.Numerics;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -34,47 +36,63 @@ namespace N_Puzzle.Algorithms
     public Node Solve(Node start, Node goal)
     {
       Node currentNode = new Node(start.state);
+      Console.WriteLine("LUC BAT DAU");
+      printf(currentNode.state);
+      var listNode = new List<Node>();
+      listNode.Add(currentNode);
 
       while (!Util.IsGoalState(currentNode, goal) && !MainForm.IsOutOfMem)
       {
-        Node temp = null;
+        var historyNode = new List<Node>();
+        int j = listNode.Count - 1;
+        Console.WriteLine($"so j luc dau: {j}");
 
         for (int i = 0; i < 4; i++)
         {
           if (Util.TryMove(currentNode, (MoveDirection)i, out Node nextNode))
           {
             CalculateCost(nextNode);
-            Console.WriteLine($"cost: {nextNode.cost}");
-            Console.WriteLine($"depth: {nextNode.depth}");
-            Console.WriteLine($"i: {i}");
-            for (int j = 0; j < nextNode.state.Length; j++)
-            {
-              Console.WriteLine($"nextNode demo, {nextNode.state[j]}");
-            }
-            if (temp == null)
-            {
-              temp = nextNode;
-              continue;
-            }
-            else
-              temp = CompareNode(temp, nextNode);
+            Console.WriteLine($"cost for nextNode: {nextNode.cost}");
+            historyNode.Add(nextNode);
+            printf(nextNode.state);
+            Console.WriteLine($"history node count: {historyNode.Count}");
           }
         }
-        currentNode = temp;
-      }
-      for (int i = 0; i < goal.state.Length; i++)
-      {
-        Console.WriteLine($"goal, {goal.state[i]}");
-      }
+        listNode.RemoveAt(listNode.Count - 1);
+        Console.WriteLine($"so j luc sau: {j}");
 
-      for (int i = 0; i < currentNode.state.Length; i++)
-      {
-        Console.WriteLine($"current, {currentNode.state[i]}");
-      }
 
+        for (int i = 0; i < historyNode.Count; i++)
+        {
+          for (int k = i + 1; k < historyNode.Count; k++)
+          {
+            if (historyNode[i].cost <= historyNode[k].cost)
+            {
+              ;
+              Swap(historyNode, i, k);
+
+            }
+          }
+        }
+
+        for (int i = 0; i < historyNode.Count; i++)
+        {
+          if (historyNode[i].cost == historyNode[historyNode.Count - 1].cost)
+          {
+            listNode.Add(historyNode[i]);
+          }
+        }
+        currentNode = listNode[j];
+        Console.WriteLine("GOAL");
+        printf(goal.state);
+        Console.WriteLine("START");
+        printf(start.state);
+      }
+      printf(currentNode.state);
       Console.WriteLine($"depth: {currentNode.depth}  generatedNode: {Node.generatedNode}");
       Node.Reset();
       return currentNode;
+
     }
 
 
@@ -107,7 +125,7 @@ namespace N_Puzzle.Algorithms
       return heuristicCost;
     }
 
-    private int GetMisplacedTiles(ref Node nextNode)
+    private int GetMisplacedTiles(Node nextNode)
     {
       int heuristicCost = 0;
       for (int i = 0; i < nextNode.state.Length; i++)
@@ -125,7 +143,7 @@ namespace N_Puzzle.Algorithms
 
     private int GetHeuristicCost(Node nextNode)
     {
-      return GetManhattanDistanceCost(ref nextNode);
+      return GetMisplacedTiles(nextNode);
     }
 
     private void CalculateCost(Node nextNode)
@@ -152,6 +170,21 @@ namespace N_Puzzle.Algorithms
       else
       {
         return node1;
+      }
+    }
+
+    private void Swap<T>(IList<T> list, int i, int j)
+    {
+      T temp = list.ElementAt(i);
+      list[i] = list[j];
+      list[j] = temp;
+    }
+
+    private void printf(int[] arr)
+    {
+      for (int i = 0; i < arr.Length; i++)
+      {
+        Console.Write($" {i} ");
       }
     }
   }
