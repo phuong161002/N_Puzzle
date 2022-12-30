@@ -151,7 +151,8 @@ namespace N_Puzzle
             IsOutOfMem = false;
             Stopwatch stopWatch = Stopwatch.StartNew();
 
-            solver = new Demo();
+           //solver = new Demo();
+            solver = new AStar(start, goal);
             Node endNode = solver.Solve(start, goal);
             Node.Reset();
             if (!IsOutOfMem)
