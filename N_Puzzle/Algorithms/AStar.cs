@@ -60,7 +60,7 @@ namespace N_Puzzle.Algorithms
 
 
 
-    public int numWrongTiles(Node nextNode)
+    public int GetMisplacedTiles(Node nextNode)
     {
       int count = 0;
       for (int i = 0; i < nextNode.state.Length; i++)
@@ -73,7 +73,7 @@ namespace N_Puzzle.Algorithms
       return count;
     }
 
-    public int manhattanDistance(Node nextNode)
+    public int GetManhattanDistanceCost(Node nextNode)
     {
       int result = 0;
       int[] goalIndex = new int[goalNode.state.Length];
@@ -87,12 +87,12 @@ namespace N_Puzzle.Algorithms
 
       for (int i = 0; i < stateIndex.Length; i++)
       {
-        int goalX = goalIndex[i] % Settings.SIZE;
-        int goalY = goalIndex[i] / Settings.SIZE;
-        int stateX = stateIndex[i] % Settings.SIZE;
-        int stateY = stateIndex[i] / Settings.SIZE;
+        int gx = goalIndex[i] % 3;
+        int gy = goalIndex[i] / 3;
+        int x = stateIndex[i] % 3;
+        int y = stateIndex[i] / 3;
 
-        result += Math.Abs(goalX - stateX) + Math.Abs(goalY - stateY);
+        result += System.Math.Abs(gx - x) + System.Math.Abs(gy - y);
       }
 
       return result;
@@ -108,7 +108,7 @@ namespace N_Puzzle.Algorithms
       {
         CostG = nextNode.depth + 1;
       }
-      CostH = manhattanDistance(nextNode);
+      CostH = GetManhattanDistanceCost(nextNode);
 
       nextNode.cost = CostH + CostG;
     }
