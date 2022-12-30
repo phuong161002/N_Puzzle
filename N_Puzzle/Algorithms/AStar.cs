@@ -28,6 +28,8 @@ namespace N_Puzzle.Algorithms
       Node currentNode = new Node(start.state);
       closed = new HashSet<long>();
       listNode.Enqueue(currentNode);
+      Util.Print(currentNode.state, "NODE BAN DAU");
+
 
       while (!MainForm.IsOutOfMem)
       {
@@ -37,6 +39,8 @@ namespace N_Puzzle.Algorithms
         }
 
         currentNode = listNode.Dequeue();
+
+        Util.Print(currentNode.state, "NODE DUOC DUNG");
 
         if (Util.IsGoalState(currentNode, goal))
         {
@@ -50,6 +54,9 @@ namespace N_Puzzle.Algorithms
             if (Util.TryMove(currentNode, (MoveDirection)i, out Node nextNode) && !Check(nextNode.state))
             {
               CalculateCost(nextNode);
+              Util.Print(nextNode.state, $"NODE MOI DUOC THEM VAO ____ {(MoveDirection)i}");
+              Console.WriteLine($"Heuristic Cost {nextNode.cost}");
+              Console.WriteLine($"Depth {nextNode.depth}");
               listNode.Enqueue(nextNode);
             }
           }
