@@ -83,8 +83,8 @@ namespace N_Puzzle.Algorithms
     public int GetManhattanDistanceCost(Node nextNode)
     {
       int result = 0;
-      int[] goalIndex = new int[goalNode.state.Length];
-      int[] stateIndex = new int[goalNode.state.Length];
+      int[] goalIndex = new int[9];
+      int[] stateIndex = new int[9];
 
       for (int i = 0; i < nextNode.state.Length; i++)
       {
