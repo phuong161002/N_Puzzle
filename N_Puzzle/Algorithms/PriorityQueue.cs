@@ -6,48 +6,37 @@ using System.Threading.Tasks;
 
 namespace N_Puzzle.Algorithms
 {
-    public class PriorityQueue<T>
+    public class PriorityQueue<T> where T : IComparable<T>
     {
-        private class PQNode
-        {
-            public int Priority;
-            public T Data;
-        }
-
-        private LinkedList<PQNode> _items;
+        private LinkedList<T> _items;
 
         public PriorityQueue()
         {
-            _items = new LinkedList<PQNode>();
+            _items = new LinkedList<T>();
         }
 
-        public void Enqueue(T Data, int priority)
+        public void Enqueue(T Data)
         {
-            PQNode newNode = new PQNode()
-            {
-                Data = Data,
-                Priority = priority
-            };
             if (Count == 0)
             {
-                _items.AddLast(newNode);
+                _items.AddLast(Data);
                 return;
             }
 
             var current = _items.First;
-            
-            while(current != null && current.Value.Priority >= priority)
+
+            while (current != null && current.Value.CompareTo(Data) >= 0)
             {
                 current = current.Next;
             }
 
-            if(current == null)
+            if (current == null)
             {
-                _items.AddLast(newNode);
+                _items.AddLast(Data);
             }
             else
             {
-                _items.AddBefore(current, newNode);
+                _items.AddBefore(current, Data);
             }
         }
 
@@ -62,17 +51,17 @@ namespace N_Puzzle.Algorithms
 
             _items.RemoveFirst();
 
-            return node.Data;
+            return node;
         }
 
         public T Peek()
         {
-            if(_items.Count == 0)
+            if (_items.Count == 0)
             {
                 throw new InvalidOperationException("The queue is empty.");
             }
 
-            return _items.First.Value.Data;
+            return _items.First.Value;
         }
 
         public int Count

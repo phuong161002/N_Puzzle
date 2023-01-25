@@ -148,33 +148,24 @@ namespace N_Puzzle
         private Task Solve(Node start, Node goal)
         {
             IsOutOfMem = false;
-            label1.Text = "Solving...";
-            return Task.Factory.StartNew(() =>
+            Stopwatch stopWatch = Stopwatch.StartNew();
+
+            solver = new Demo();
+            Node endNode = solver.Solve(start, goal);
+            Console.WriteLine($"depth : {endNode.depth}  generatedNode: {Node.generatedNode}");
+            Node.Reset();
+            if (!IsOutOfMem)
             {
-                Stopwatch stopWatch = Stopwatch.StartNew();
-                BFS bfs = new BFS(start, goal);
-                Node node = bfs.Solve(start, goal);
+                List<Node> listNode = Util.Trace(endNode);
+
                 label1.Text = $"Elapsed Time: {stopWatch.ElapsedMilliseconds}ms";
-                return node;
-            }).ContinueWith(task =>
-            {
-                if (!IsOutOfMem)
-                {
-                    var moves = Util.Trace(task.Result);
-                    ShowMove(moves);
-                }
-                else
-                {
-                    label1.Text = "Out of memory! Can not solve";
-                    currentNode = new Node(startState);
-                    UpdateGameView(currentNode.state);
-                }
-            }).ContinueWith(task =>
-            {
-                currentNode = new Node(currentNode.state);
-                UpdateGameView(currentNode.state);
-                GC.Collect();
-            });
+
+                ShowMove(listNode);
+            }
+            
+
+            currentNode = new Node(startNode.state);
+            UpdateGameView(currentNode.state);
         }
 
     private void ShowMove(List<Node> listNode)
@@ -189,7 +180,17 @@ namespace N_Puzzle
 
         private void btnSolve_Click(object sender, EventArgs e)
         {
-            runningTask = Solve(currentNode, goalNode);
+            solveThread = new Thread(() =>
+            {
+                btnSolve.Enabled = false;
+                btnShuffer.Enabled = false;
+                Solve(currentNode, goalNode);
+                GC.Collect();
+                btnSolve.Enabled = true;
+                btnShuffer.Enabled = true;
+            })
+            { IsBackground = true };
+            solveThread.Start();
         }
 
     private void btnShuffer_Click(object sender, EventArgs e)
@@ -213,6 +214,17 @@ namespace N_Puzzle
                 IsOutOfMem = true;
             }
             label2.Text = $"Ram: {memUsaged} MB";
+            label3.Text = $"Generated Node: {Node.generatedNode}";
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            GC.Collect();
+        }
+
+        private void label3_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
