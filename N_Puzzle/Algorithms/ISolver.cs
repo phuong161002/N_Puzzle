@@ -8,6 +8,10 @@ namespace N_Puzzle.Algorithms
 {
     public interface ISolver
     {
-        Node Solve(Node start, Node goal);
+        Node GoalNode { get; }
+        SolvingStatus Status { get; }
+        void Solve(int[] start, int[] goal);
+        event Action OnSolvingCompleted;
+        event Action OnSolvingFailed;
     }
 }

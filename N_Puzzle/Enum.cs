@@ -14,10 +14,19 @@ namespace N_Puzzle
         Right
     }
 
-    public enum Solver
+    public enum SolverType
     {
         AStar,
         BFS, 
         DFS
+    }
+
+    public enum SolvingStatus
+    {
+        None,
+        Solving,
+        Success,
+        Failed_OutOfMem,
+        Failed_TimeOut,
     }
 }

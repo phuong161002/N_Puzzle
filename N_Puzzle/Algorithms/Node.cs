@@ -8,23 +8,19 @@ namespace N_Puzzle.Algorithms
 {
     public class Node: IComparable<Node>
     {
-        public static int[] goalState;
-        public static int generatedNode = 0;
+        public static int NumEvaluatedNodes = 0;
         public int[] state { get; set; }
         public Node parent { get; set; }
-        public List<Node> children { get; set; }
-        public int cost { get; set; }
         public int depth { get; set; }
 
         public int CostH { get => depth; }
-        public int CostG { get => Settings.TYPE_HEUR == 0 ? manhattanDistance(goalState) : numWrongTiles(goalState); }
+        public int CostG { get => Settings.TypeHeuristic == 0 ? manhattanDistance(Settings.GoalState) : numWrongTiles(Settings.GoalState); }
         public int CostF { get => CostH + CostG; }
 
         public Node(int[] state)
         {
             this.state = state;
-            children = new List<Node>();
-            generatedNode++;
+            NumEvaluatedNodes++;
         }
 
         public Node Clone()
@@ -32,20 +28,8 @@ namespace N_Puzzle.Algorithms
             return new Node(state)
             {
                 parent = parent,
-                children = children,
-                cost = cost,
                 depth = depth
             };
-        }
-
-        //~Node()
-        //{
-        //    generatedNode--;
-        //}
-
-        public void AddChild(Node child)
-        {
-            children.Add(child);
         }
 
         public void SetParent(Node parent)
@@ -55,7 +39,7 @@ namespace N_Puzzle.Algorithms
 
         public static void Reset()
         {
-            generatedNode = 0;
+            NumEvaluatedNodes = 0;
         }
 
         public int numWrongTiles(int[] goalState)

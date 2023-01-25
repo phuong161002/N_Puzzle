@@ -5,18 +5,17 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
 using N_Puzzle.Properties;
+using N_Puzzle.Algorithms;
 
 namespace N_Puzzle
 {
-    public static class Util
+    public static class Utils
     {
-        public static bool IsGoalState(Node node, Node goalNode)
+        public static bool IsGoalState(int[] state, int[] goalState)
         {
-            var state = node.state;
-            var goalState = goalNode.state;
             for (int i = 0; i < state.Length && i < goalState.Length; i++)
             {
-                if(state[i] != goalState[i])
+                if (state[i] != goalState[i])
                 {
                     return false;
                 }
@@ -75,8 +74,6 @@ namespace N_Puzzle
                 parent = currentNode,
                 depth = currentNode.depth + 1
             };
-
-            currentNode.AddChild(nextNode);
 
             return nextNode;
         }
@@ -240,20 +237,15 @@ namespace N_Puzzle
             return currenState;
         }
 
-        public static List<Node> Trace(Node node)
+        public static long EncodeNode(int[] state)
         {
-            List<Node> result = new List<Node>();
-            Node currentNode = node;
-            result.Add(node);
-            while(currentNode.parent != null)
+            long res = 0;
+            for (int i = 0; i < state.Length; i++)
             {
-                result.Add(currentNode.parent);
-                currentNode = currentNode.parent;
+                res |= (long)state[i];
+                res <<= 4;
             }
-
-            result.Reverse();
-
-            return result;
+            return res;
         }
     }
 }
