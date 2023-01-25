@@ -26,28 +26,27 @@ namespace N_Puzzle
         public Node startNode;
         public Node currentNode;
         public Node goalNode;
-        private Thread solveThread;
-        private ISolver solver;
+        private Task runningTask;
+        private CancellationTokenSource taskStop;
 
-        public MainForm()
-        {
-            InitializeComponent();
-            if (Instance == null)
-            {
-                Instance = this;
-            }
-            else
-            {
-                this.Close();
-            }
-            CenterToParent();
-            LoadImage();
-            Control.CheckForIllegalCrossThreadCalls = false;
-        }
+    public MainForm()
+    {
+      InitializeComponent();
+      if (Instance == null)
+      {
+        Instance = this;
+      }
+      else
+      {
+        this.Close();
+      }
+      CenterToParent();
+      LoadImage();
+      Control.CheckForIllegalCrossThreadCalls = false;
+    }
 
         public void LoadImage()
         {
-            
             myPictureBoxes = new PictureBox[9];
             myPictureBoxes[0] = pictureBox1;
             myPictureBoxes[1] = pictureBox2;
@@ -59,147 +58,149 @@ namespace N_Puzzle
             myPictureBoxes[7] = pictureBox8;
             myPictureBoxes[8] = pictureBox9;
 
-            myImages = new Image[10];
-            myImages[0] = Properties.Resources.black;
-            myImages[1] = Properties.Resources.Img1;
-            myImages[2] = Properties.Resources.Img2;
-            myImages[3] = Properties.Resources.Img3;
-            myImages[4] = Properties.Resources.Img4;
-            myImages[5] = Properties.Resources.Img5;
-            myImages[6] = Properties.Resources.Img6;
-            myImages[7] = Properties.Resources.Img7;
-            myImages[8] = Properties.Resources.Img8;
-            myImages[9] = Properties.Resources.Img9;
+      myImages = new Image[10];
+      myImages[0] = Properties.Resources.black;
+      myImages[1] = Properties.Resources.Img1;
+      myImages[2] = Properties.Resources.Img2;
+      myImages[3] = Properties.Resources.Img3;
+      myImages[4] = Properties.Resources.Img4;
+      myImages[5] = Properties.Resources.Img5;
+      myImages[6] = Properties.Resources.Img6;
+      myImages[7] = Properties.Resources.Img7;
+      myImages[8] = Properties.Resources.Img8;
+      myImages[9] = Properties.Resources.Img9;
 
-            blackImage = Properties.Resources.black;
-            original = Properties.Resources.original;
+      blackImage = Properties.Resources.black;
+      original = Properties.Resources.original;
 
-            goalState = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 0 };
-            startState = (int[])goalState.Clone();
+      goalState = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 0 };
+      startState = (int[])goalState.Clone();
 
-            startNode = new Node(startState);
+      startNode = new Node(startState);
 
-            currentNode = new Node(startNode.state);
-            UpdateGameView(currentNode.state);
-            goalNode = new Node(goalState);
-        }
+      currentNode = new Node(startNode.state);
+      UpdateGameView(currentNode.state);
+      goalNode = new Node(goalState);
+    }
 
-        private void UpdateGameView(int[] array)
-        {
-            for (int i = 0; i < array.Length && i < myPictureBoxes.Length; i++)
-            {
-                myPictureBoxes[i].Image = myImages[array[i]];
-            }
-        }
+    private void UpdateGameView(int[] array)
+    {
+      for (int i = 0; i < array.Length && i < myPictureBoxes.Length; i++)
+      {
+        myPictureBoxes[i].Image = myImages[array[i]];
+      }
+    }
 
-        protected override void OnKeyDown(KeyEventArgs e)
-        {
-            //base.OnKeyDown(e);
-            switch (e.KeyCode)
-            {
-                case Keys.Up:
-                    MoveUp();
-                    break;
-                case Keys.Down:
-                    MoveDown();
-                    break;
-                case Keys.Left:
-                    MoveLeft();
-                    break;
-                case Keys.Right:
-                    MoveRight();
-                    break;
-            }
-            Util.Print(currentNode.state);
-            UpdateGameView(currentNode.state);
-        }
+    protected override void OnKeyDown(KeyEventArgs e)
+    {
+      //base.OnKeyDown(e);
+      switch (e.KeyCode)
+      {
+        case Keys.Up:
+          MoveUp();
+          break;
+        case Keys.Down:
+          MoveDown();
+          break;
+        case Keys.Left:
+          MoveLeft();
+          break;
+        case Keys.Right:
+          MoveRight();
+          break;
+      }
+      Util.Print(currentNode.state);
+      UpdateGameView(currentNode.state);
+    }
 
-        public void MoveUp()
-        {
-            if (Util.TryMove(currentNode, MoveDirection.Up, out Node nextNode))
-            {
-                currentNode = nextNode;
-            }
-        }
+    public void MoveUp()
+    {
+      if (Util.TryMove(currentNode, MoveDirection.Up, out Node nextNode))
+      {
+        currentNode = nextNode;
+      }
+    }
 
-        public void MoveDown()
-        {
-            if (Util.TryMove(currentNode, MoveDirection.Down, out Node nextNode))
-            {
-                currentNode = nextNode;
-            }
-        }
+    public void MoveDown()
+    {
+      if (Util.TryMove(currentNode, MoveDirection.Down, out Node nextNode))
+      {
+        currentNode = nextNode;
+      }
+    }
 
-        public void MoveLeft()
-        {
-            if (Util.TryMove(currentNode, MoveDirection.Left, out Node nextNode))
-            {
-                currentNode = nextNode;
-            }
-        }
+    public void MoveLeft()
+    {
+      if (Util.TryMove(currentNode, MoveDirection.Left, out Node nextNode))
+      {
+        currentNode = nextNode;
+      }
+    }
 
-        public void MoveRight()
-        {
-            if (Util.TryMove(currentNode, MoveDirection.Right, out Node nextNode))
-            {
-                currentNode = nextNode;
-            }
-        }
+    public void MoveRight()
+    {
+      if (Util.TryMove(currentNode, MoveDirection.Right, out Node nextNode))
+      {
+        currentNode = nextNode;
+      }
+    }
 
-        private void Solve(Node start, Node goal)
+        private Task Solve(Node start, Node goal)
         {
             IsOutOfMem = false;
-            Stopwatch stopWatch = Stopwatch.StartNew();
-
-            solver = new Demo();
-            Node endNode = solver.Solve(start, goal);
-            Node.Reset();
-            if (!IsOutOfMem)
+            label1.Text = "Solving...";
+            return Task.Factory.StartNew(() =>
             {
-                List<Node> listNode = Util.Trace(endNode);
-
+                Stopwatch stopWatch = Stopwatch.StartNew();
+                BFS bfs = new BFS(start, goal);
+                Node node = bfs.Solve(start, goal);
                 label1.Text = $"Elapsed Time: {stopWatch.ElapsedMilliseconds}ms";
-
-                ShowMove(listNode);
-            }
-            
-
-            currentNode = new Node(startNode.state);
-            UpdateGameView(currentNode.state);
-        }
-
-        private void ShowMove(List<Node> listNode)
-        {
-            listNode.ForEach(n =>
+                return node;
+            }).ContinueWith(task =>
             {
-                currentNode = n;
-                UpdateGameView(n.state);
-                Thread.Sleep(300);
+                if (!IsOutOfMem)
+                {
+                    var moves = Util.Trace(task.Result);
+                    ShowMove(moves);
+                }
+                else
+                {
+                    label1.Text = "Out of memory! Can not solve";
+                    currentNode = new Node(startState);
+                    UpdateGameView(currentNode.state);
+                }
+            }).ContinueWith(task =>
+            {
+                currentNode = new Node(currentNode.state);
+                UpdateGameView(currentNode.state);
+                GC.Collect();
             });
         }
 
+    private void ShowMove(List<Node> listNode)
+    {
+      listNode.ForEach(n =>
+      {
+        currentNode = n;
+        UpdateGameView(n.state);
+        Thread.Sleep(300);
+      });
+    }
+
         private void btnSolve_Click(object sender, EventArgs e)
         {
-            solveThread = new Thread(() =>
-            {
-                btnSolve.Enabled = false;
-                Solve(currentNode, goalNode);
-                GC.Collect();
-                btnSolve.Enabled = true;
-            })
-            { IsBackground = true };
-            solveThread.Start();
+            runningTask = Solve(currentNode, goalNode);
         }
 
-        private void btnShuffer_Click(object sender, EventArgs e)
-        {
-            if (int.TryParse(tbShufferItters.Text, out int num))
-            {
-                var newState = Util.Shuffer(currentNode.state, num);
-                currentNode = new Node(newState);
-                UpdateGameView(currentNode.state);
-            }
-        }
+    private void btnShuffer_Click(object sender, EventArgs e)
+    {
+      if (int.TryParse(tbShufferItters.Text, out int num))
+      {
+        var newState = Util.Shuffer(currentNode.state, num);
+        currentNode = new Node(newState);
+        UpdateGameView(currentNode.state);
+      }
+    }
 
         private void timer_Tick(object sender, EventArgs e)
         {
@@ -212,11 +213,6 @@ namespace N_Puzzle
                 IsOutOfMem = true;
             }
             label2.Text = $"Ram: {memUsaged} MB";
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            GC.Collect();
         }
     }
 }

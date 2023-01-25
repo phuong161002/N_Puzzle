@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace N_Puzzle
+namespace N_Puzzle.Algorithms
 {
     public class Node
     {
