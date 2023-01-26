@@ -6,17 +6,18 @@ using System.Threading.Tasks;
 
 namespace N_Puzzle.Algorithms
 {
-    public class DFS : ISolver
+    public class DLS : ISolver
     {
         public Node GoalNode { get; private set; }
+
         public SolvingStatus Status { get; private set; }
 
         public event Action OnSolvingCompleted;
         public event Action OnSolvingFailed;
 
-        private HashSet<string> closed;
+        HashSet<string> closed;
 
-        public DFS()
+        public DLS()
         {
             closed = new HashSet<string>();
         }
@@ -40,13 +41,17 @@ namespace N_Puzzle.Algorithms
                     return;
                 }
                 Node.NumEvaluatedNodes++;
-                closed.Add(Utils.EncodeNode(currentNode.state));
-                for (int i = 0; i < 4; i++)
+
+                closed.Add(Utils.EncodeNode(currentNode.state, currentNode.depth));
+                if (currentNode.depth < Settings.MaxDepthDLS)
                 {
-                    if (Utils.TryMove(currentNode, (MoveDirection)i, out Node nextNode)
-                        && !closed.Contains(Utils.EncodeNode(nextNode.state)))
+                    for (int i = 0; i < 4; i++)
                     {
-                        openNode.Push(nextNode);
+                        if (Utils.TryMove(currentNode, (MoveDirection)i, out Node nextNode)
+                            && !closed.Contains(Utils.EncodeNode(nextNode.state, nextNode.depth)))
+                        {
+                            openNode.Push(nextNode);
+                        }
                     }
                 }
             }

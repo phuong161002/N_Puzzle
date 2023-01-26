@@ -80,6 +80,8 @@ namespace N_Puzzle
                     return new BFS();
                 case SolverType.DFS:
                     return new DFS();
+                case SolverType.DLS:
+                    return new DLS();
                 default:
                     return new AStar();
             }

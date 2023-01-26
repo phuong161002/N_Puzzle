@@ -19,7 +19,8 @@ namespace N_Puzzle
         public static int[] GoalState = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 0 };
         public static int[] StartState = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 0 };
         public static int DelayMove = 200; // ms
-        public static int MaxDepthDFS = 30;
+        public static int MaxDepthDFS = 1000;
+        public static int MaxDepthDLS = 30;
         public static int GameViewSize = 400; // pixels
         public static int MaxSize = 20;
         public static int[] DelayMoveArray;

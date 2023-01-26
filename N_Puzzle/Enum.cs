@@ -20,6 +20,7 @@ namespace N_Puzzle
         AStar_MisplacedTiles,
         BFS, 
         DFS,
+        DLS,
     }
 
     public enum SolvingStatus

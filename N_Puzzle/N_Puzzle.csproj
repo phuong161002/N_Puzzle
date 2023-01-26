@@ -52,6 +52,7 @@
     <Compile Include="Algorithms\AStar.cs" />
     <Compile Include="Algorithms\BFS.cs" />
     <Compile Include="Algorithms\DFS.cs" />
+    <Compile Include="Algorithms\DLS.cs" />
     <Compile Include="Algorithms\ISolver.cs" />
     <Compile Include="Algorithms\PriorityQueue.cs" />
     <Compile Include="Controller.cs" />
