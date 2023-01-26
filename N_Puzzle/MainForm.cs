@@ -18,6 +18,7 @@ namespace N_Puzzle
         private PictureBox[] myPictureBoxes;
         private Image[] myImages;
         private Controller controller;
+        private int[] lastShufferState;
 
         public MainForm()
         {
@@ -25,35 +26,57 @@ namespace N_Puzzle
             CenterToParent();
             controller = new Controller(this);
             cbSolveType.DataSource = Enum.GetValues(typeof(SolverType));
-            LoadImage();
+            InitGameView(3);
+            Settings.OnSizeChanged += InitGameView;
             Control.CheckForIllegalCrossThreadCalls = false;
-            UpdateGameView(Settings.StartState);
+            trackBarSpeed.Maximum = Settings.DelayMoveArray.Length - 1;
+            trackBarSpeed.Value = 2;
         }
 
-        public void LoadImage()
-        {
-            myPictureBoxes = new PictureBox[9];
-            myPictureBoxes[0] = pictureBox1;
-            myPictureBoxes[1] = pictureBox2;
-            myPictureBoxes[2] = pictureBox3;
-            myPictureBoxes[3] = pictureBox4;
-            myPictureBoxes[4] = pictureBox5;
-            myPictureBoxes[5] = pictureBox6;
-            myPictureBoxes[6] = pictureBox7;
-            myPictureBoxes[7] = pictureBox8;
-            myPictureBoxes[8] = pictureBox9;
 
-            myImages = new Image[10];
-            myImages[0] = Properties.Resources.black;
-            myImages[1] = Properties.Resources.Img1;
-            myImages[2] = Properties.Resources.Img2;
-            myImages[3] = Properties.Resources.Img3;
-            myImages[4] = Properties.Resources.Img4;
-            myImages[5] = Properties.Resources.Img5;
-            myImages[6] = Properties.Resources.Img6;
-            myImages[7] = Properties.Resources.Img7;
-            myImages[8] = Properties.Resources.Img8;
-            myImages[9] = Properties.Resources.Img9;
+        private Image[] SplitImageIntoGrid(Image source, int numRow, int numCol)
+        {
+            var res = new Image[numRow * numCol + 1];
+            res[0] = Properties.Resources.black;
+            Size imgSize = new Size(source.Size.Width / numCol, source.Size.Height / numRow);
+            for (int i = 0; i < numRow; i++)
+            {
+                for (int j = 0; j < numCol; j++)
+                {
+                    int index = i * numRow + j + 1;
+                    res[index] = new Bitmap(imgSize.Width, imgSize.Height);
+                    var graphics = Graphics.FromImage(res[index]);
+                    graphics.DrawImage(source, new Rectangle(new Point(0, 0), imgSize),
+                        new Rectangle(new Point(j * imgSize.Width, i * imgSize.Height), imgSize), GraphicsUnit.Pixel);
+                    graphics.Dispose();
+                }
+            }
+
+            return res;
+        }
+
+        private void InitGameView(int gridSize)
+        {
+            grbGameView.Controls.Clear();
+
+            myImages = SplitImageIntoGrid(Properties.Resources.original, gridSize, gridSize);
+            myImages[myImages.Length - 1] = Properties.Resources.black;
+
+            myPictureBoxes = new PictureBox[gridSize * gridSize];
+            int imgSize = Settings.GameViewSize / gridSize;
+            for (int i = 0; i < myPictureBoxes.Length; i++)
+            {
+                myPictureBoxes[i] = new PictureBox();
+                grbGameView.Controls.Add(myPictureBoxes[i]);
+                myPictureBoxes[i].Location = new Point((i % gridSize) * imgSize + 13, (i / gridSize) * imgSize + 15);
+                myPictureBoxes[i].Size = new Size(imgSize - 2, imgSize - 2);
+                myPictureBoxes[i].TabIndex = 0;
+                myPictureBoxes[i].SizeMode = PictureBoxSizeMode.StretchImage;
+                myPictureBoxes[i].TabStop = false;
+            }
+
+            lastShufferState = Settings.StartState;
+            UpdateGameView(Settings.StartState);
         }
 
         private void UpdateGameView(int[] array)
@@ -67,15 +90,57 @@ namespace N_Puzzle
 
         public void PerformMoves(List<int[]> moves)
         {
-            new Thread(() =>
+            for (int i = 0; i < moves.Count; i++)
             {
-                for (int i = 0; i < moves.Count; i++)
-                {
-                    UpdateGameView(moves[i]);
-                    Thread.Sleep(Settings.DelayMove);
-                }
-            })
-            { IsBackground = true }.Start();
+                UpdateGameView(moves[i]);
+                Thread.Sleep(Settings.DelayMove);
+            }
+        }
+
+        private void StartSolving()
+        {
+            panel1.Enabled = false;
+            btnStopSolving.Enabled = true;
+            controller.Solve((SolverType)cbSolveType.SelectedItem, controller.CurrentState, Settings.DefaultGoalState, () => EndSolving());
+        }
+
+        private void EndSolving()
+        {
+            panel1.Enabled = true;
+            btnStopSolving.Enabled = false;
+            UpdateGameView(Settings.StartState);
+        }
+
+        private void StopSolving()
+        {
+            controller.StopSolving();
+        }
+        
+        public void Log(string log)
+        {
+            label4.Text = log;
+        }
+
+        private void trackBarSpeed_Scroll(object sender, EventArgs e)
+        {
+            var trackBar = (TrackBar)sender;
+            if(trackBar.Value >= 0 && trackBar.Value < Settings.DelayMoveArray.Length)
+            {
+                Settings.DelayMove = Settings.DelayMoveArray[trackBar.Value];
+            }
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            Process proc = Process.GetCurrentProcess();
+            proc.Refresh();
+            var memUsage = proc.PrivateMemorySize64 / 1024 / 1024;
+            if (memUsage > 500)
+            {
+                Log("Out of memory! Can not solve");
+                controller.StopSolving();
+            }
+            label3.Text = $"Ram: {memUsage} MB";
         }
 
         private void btnShuffer_Click(object sender, EventArgs e)
@@ -84,14 +149,40 @@ namespace N_Puzzle
             {
                 var state = Settings.DefaultGoalState;
                 var newState = Utils.Shuffer(state, num);
-                controller.CurrentState = newState;
+                lastShufferState = newState;
                 UpdateGameView(newState);
+            }
+        }
+
+        private void btnLastShufferState_Click(object sender, EventArgs e)
+        {
+            if (lastShufferState != null)
+            {
+                UpdateGameView(lastShufferState);
             }
         }
 
         private void btnSolve_Click(object sender, EventArgs e)
         {
-            controller.Solve((SolverType)cbSolveType.SelectedItem, controller.CurrentState, Settings.DefaultGoalState);
+            StartSolving();
+        }
+
+        private void btnSetSize_Click(object sender, EventArgs e)
+        {
+            if (int.TryParse(tbGridSize.Text, out int num) && num <= Settings.MaxSize && num > 1)
+            {
+                Settings.Size = num;
+            }
+        }
+
+        private void btnStopSolving_Click(object sender, EventArgs e)
+        {
+            controller.StopSolving();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            GC.Collect();
         }
     }
 }

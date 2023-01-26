@@ -8,70 +8,93 @@ namespace N_Puzzle.Algorithms
 {
     public class PriorityQueue<T> where T : IComparable<T>
     {
-        private LinkedList<T> _items;
+        private List<T> _items;
+        private int lastIndex => _items.Count > 0 ? _items.Count - 1 : 0;
+        public bool IsEmpty => _items.Count == 0;
+
 
         public PriorityQueue()
         {
-            _items = new LinkedList<T>();
+            _items = new List<T>();
         }
 
-        public void Enqueue(T Data)
+        public void Enqueue(T item)
         {
-            if (Count == 0)
-            {
-                _items.AddLast(Data);
-                return;
-            }
+            _items.Add(item);
 
-            var current = _items.First;
-
-            while (current != null && current.Value.CompareTo(Data) >= 0)
-            {
-                current = current.Next;
-            }
-
-            if (current == null)
-            {
-                _items.AddLast(Data);
-            }
-            else
-            {
-                _items.AddBefore(current, Data);
-            }
+            ShiftUp(lastIndex);
         }
 
         public T Dequeue()
         {
-            if (_items.Count == 0)
+            T result = _items[0];
+
+            Swap(0, lastIndex);
+            _items.RemoveAt(lastIndex);
+            ShiftDown(0);
+
+            return result;
+        }
+
+        private void ShiftUp(int i)
+        {
+            int currentIndex = i;
+            int parentIndex = parent(currentIndex);
+            while(currentIndex > 0 && _items[parentIndex].CompareTo(_items[currentIndex]) < 0)
             {
-                throw new InvalidOperationException("The queue is empty.");
+                Swap(currentIndex, parentIndex);
+
+                currentIndex = parentIndex;
+                parentIndex = parent(currentIndex);
+            }
+        }
+
+        private void ShiftDown(int i)
+        {
+            int maxIndex = i;
+
+            // Left Child
+            int l = leftChild(i);
+
+            if (l <= lastIndex && _items[l].CompareTo(_items[maxIndex]) > 0)
+            {
+                maxIndex = l;
             }
 
-            var node = _items.First.Value;
+            // Right Child
+            int r = rightChild(i);
 
-            _items.RemoveFirst();
-
-            return node;
-        }
-
-        public T Peek()
-        {
-            if (_items.Count == 0)
+            if (r <= lastIndex && _items[r].CompareTo(_items[maxIndex]) > 0)
             {
-                throw new InvalidOperationException("The queue is empty.");
+                maxIndex = r;
             }
 
-            return _items.First.Value;
+            // If i not same as maxIndex
+            if (i != maxIndex)
+            {
+                Swap(i, maxIndex);
+                ShiftDown(maxIndex);
+            }
         }
 
-        public int Count
+        private void Swap(int i1, int i2)
         {
-            get { return _items.Count; }
+            _items.Swap(i1, i2);
         }
 
-        public bool IsEmpty
+        private int parent(int i)
         {
-            get { return Count == 0; }
+            return (i - 1) / 2;
+        }
+
+        private int leftChild(int i)
+        {
+            return (i * 2) + 1;
+        }
+
+        private int rightChild(int i)
+        {
+            return (i * 2) + 2;
         }
     }
 }

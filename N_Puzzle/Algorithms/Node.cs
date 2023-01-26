@@ -12,7 +12,6 @@ namespace N_Puzzle.Algorithms
         public int[] state { get; set; }
         public Node parent { get; set; }
         public int depth { get; set; }
-
         public int CostH { get => depth; }
         public int CostG { get => Settings.TypeHeuristic == 0 ? manhattanDistance(Settings.GoalState) : numWrongTiles(Settings.GoalState); }
         public int CostF { get => CostH + CostG; }
@@ -69,10 +68,10 @@ namespace N_Puzzle.Algorithms
 
             for (int i = 0; i < stateIndex.Length; i++)
             {
-                int goalX = goalIndex[i] % Settings.SIZE;
-                int goalY = goalIndex[i] / Settings.SIZE;
-                int stateX = stateIndex[i] % Settings.SIZE;
-                int stateY = stateIndex[i] / Settings.SIZE;
+                int goalX = goalIndex[i] % Settings.Size;
+                int goalY = goalIndex[i] / Settings.Size;
+                int stateX = stateIndex[i] % Settings.Size;
+                int stateY = stateIndex[i] / Settings.Size;
 
                 result += Math.Abs(goalX - stateX) + Math.Abs(goalY - stateY);
             }

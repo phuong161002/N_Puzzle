@@ -16,9 +16,10 @@ namespace N_Puzzle
 
     public enum SolverType
     {
-        AStar,
+        AStar_Manhattan,
+        AStar_MisplacedTiles,
         BFS, 
-        DFS
+        DFS,
     }
 
     public enum SolvingStatus

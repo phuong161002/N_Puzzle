@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using N_Puzzle.Algorithms;
+using System.Threading;
 
 namespace N_Puzzle
 {
@@ -13,39 +14,52 @@ namespace N_Puzzle
         private ISolver _solver;
         private MainForm parent;
         private Stopwatch _stopwatch;
+        private Thread solvingThread;
         public int[] CurrentState;
+        private Action callbackSolving;
 
         public Controller(MainForm mainForm)
         {
             parent = mainForm;
         }
 
-        public void Solve(SolverType type, int[] startState, int[] goalState)
+        public void Solve(SolverType type, int[] startState, int[] goalState, Action callback = null)
         {
             if(_solver != null && _solver.Status == SolvingStatus.Solving)
             {
                 return;
             }
             Node.Reset();
+            callbackSolving = callback;
             _solver = GetSolver(type);
             _solver.OnSolvingCompleted += _solver_OnSolvingCompleted;
             _solver.OnSolvingFailed += _solver_OnSolvingFailed;
-            _stopwatch = Stopwatch.StartNew();
-            _solver.Solve(startState, goalState);
-            _stopwatch.Stop();
+            solvingThread = new Thread(() =>
+            {
+                parent.Log("Solving...");
+                _stopwatch = Stopwatch.StartNew();
+                _solver.Solve(startState, goalState);
+                _stopwatch.Stop();
+                _solver = null;
+                GC.Collect();
+                callback?.Invoke();
+                callbackSolving = null;
+            })
+            { IsBackground = true };
+            solvingThread.Start();
         }
 
         private void _solver_OnSolvingFailed()
         {
-            Console.WriteLine($"Solve Failed\n" +
+            parent.Log($"Can not solve!\n" +
                 $"Solving Time : {(int)_stopwatch.Elapsed.TotalMilliseconds}ms\n" +
                 $"Num Evaluated Nodes: {Node.NumEvaluatedNodes}");
         }
 
         private void _solver_OnSolvingCompleted()
         {
-            Console.WriteLine("Solved");
-            Console.WriteLine($"Solving Time : {(int)_stopwatch.Elapsed.TotalMilliseconds}ms\n" +
+            parent.Log($"Solved!\n" +
+                $"Solving Time : {(int)_stopwatch.Elapsed.TotalMilliseconds}ms\n" +
                 $"Num Evaluated Nodes: {Node.NumEvaluatedNodes}\n" +
                 $"Depth: {_solver.GoalNode.depth}");
             var listMove = TraceMove();
@@ -56,7 +70,11 @@ namespace N_Puzzle
         {
             switch(type)
             {
-                case SolverType.AStar:
+                case SolverType.AStar_Manhattan:
+                    Settings.TypeHeuristic = 0;
+                    return new AStar();
+                case SolverType.AStar_MisplacedTiles:
+                    Settings.TypeHeuristic = 1;
                     return new AStar();
                 case SolverType.BFS:
                     return new BFS();
@@ -80,6 +98,20 @@ namespace N_Puzzle
 
             listMove.Reverse();
             return listMove;
+        }
+
+        public void StopSolving()
+        {
+            if(solvingThread != null)
+            {
+                solvingThread.Abort();
+                callbackSolving?.Invoke();
+                callbackSolving = null;
+                solvingThread = null;
+                _solver = null;
+                _stopwatch = null;
+                GC.Collect();
+            }
         }
     }
 }

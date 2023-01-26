@@ -8,12 +8,41 @@ namespace N_Puzzle
 {
     public static class Settings
     {
-        public static int SIZE = 3;
+        public static int Size { get => _size; set {
+                _size = value;
+                OnSizeChanged?.Invoke(_size);
+            }
+        }
+        private static int _size = 3;
         public static int TypeHeuristic = 0;
         public static int[] DefaultGoalState = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 0 };
         public static int[] GoalState = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 0 };
         public static int[] StartState = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 0 };
-        public static int DelayMove = 20; // ms
-        public static int MaxDepthDFS = 100;
+        public static int DelayMove = 200; // ms
+        public static int MaxDepthDFS = 30;
+        public static int GameViewSize = 400; // pixels
+        public static int MaxSize = 20;
+        public static int[] DelayMoveArray;
+
+        public static event Action<int> OnSizeChanged;
+
+        static Settings()
+        {
+            OnSizeChanged += Settings_OnSizeChanged;
+            DelayMoveArray = new int[5] { 1000, 500, 200, 100, 50 };
+        }
+
+        private static void Settings_OnSizeChanged(int size)
+        {
+            DefaultGoalState = new int[size * size];
+            for(int i = 0; i < DefaultGoalState.Length; i++)
+            {
+                DefaultGoalState[i] = i + 1;
+            }
+            DefaultGoalState[DefaultGoalState.Length - 1] = 0;
+
+            GoalState = (int[])DefaultGoalState.Clone();
+            StartState = (int[])DefaultGoalState.Clone();
+        }
     }
 }

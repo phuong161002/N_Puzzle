@@ -15,11 +15,11 @@ namespace N_Puzzle.Algorithms
         public event Action OnSolvingCompleted;
         public event Action OnSolvingFailed;
 
-        private HashSet<long> closed;
+        HashSet<string> closed;
 
         public DFS()
         {
-            closed = new HashSet<long>();
+            closed = new HashSet<string>();
         }
 
         public void Solve(int[] start, int[] goal)
@@ -39,15 +39,15 @@ namespace N_Puzzle.Algorithms
                     OnSolvingCompleted?.Invoke();
                     return;
                 }
-
                 Node.NumEvaluatedNodes++;
-                closed.Add(Utils.EncodeNode(currentNode.state));
+
+                closed.Add(Utils.EncodeNode(currentNode.state, currentNode.depth));
                 if (currentNode.depth < Settings.MaxDepthDFS)
                 {
                     for (int i = 0; i < 4; i++)
                     {
                         if (Utils.TryMove(currentNode, (MoveDirection)i, out Node nextNode)
-                            && !closed.Contains(Utils.EncodeNode(nextNode.state)))
+                            && !closed.Contains(Utils.EncodeNode(nextNode.state, nextNode.depth)))
                         {
                             openNode.Push(nextNode);
                         }

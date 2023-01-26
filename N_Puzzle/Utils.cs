@@ -111,8 +111,8 @@ namespace N_Puzzle
             {
                 return null;
             }
-            int oldPos = y * Settings.SIZE + x;
-            int newPos = (y - 1) * Settings.SIZE + x;
+            int oldPos = y * Settings.Size + x;
+            int newPos = (y - 1) * Settings.Size + x;
             SwapInt(ref state[oldPos], ref state[newPos]);
             return state;
         }
@@ -121,12 +121,12 @@ namespace N_Puzzle
         {
             int x, y;
             (x, y) = FindZeroPos(state);
-            if (y >= Settings.SIZE - 1)
+            if (y >= Settings.Size - 1)
             {
                 return null;
             }
-            int oldPos = y * Settings.SIZE + x;
-            int newPos = (y + 1) * Settings.SIZE + x;
+            int oldPos = y * Settings.Size + x;
+            int newPos = (y + 1) * Settings.Size + x;
             SwapInt(ref state[oldPos], ref state[newPos]);
             return state;
         }
@@ -139,8 +139,8 @@ namespace N_Puzzle
             {
                 return null;
             }
-            int oldPos = y * Settings.SIZE + x;
-            int newPos = y * Settings.SIZE + x - 1;
+            int oldPos = y * Settings.Size + x;
+            int newPos = y * Settings.Size + x - 1;
             SwapInt(ref state[oldPos], ref state[newPos]);
             return state;
         }
@@ -149,12 +149,12 @@ namespace N_Puzzle
         {
             int x, y;
             (x, y) = FindZeroPos(state);
-            if (x == Settings.SIZE - 1)
+            if (x == Settings.Size - 1)
             {
                 return null;
             }
-            int oldPos = y * Settings.SIZE + x;
-            int newPos = y * Settings.SIZE + x + 1;
+            int oldPos = y * Settings.Size + x;
+            int newPos = y * Settings.Size + x + 1;
             SwapInt(ref state[oldPos], ref state[newPos]);
             return state;
         }
@@ -172,7 +172,7 @@ namespace N_Puzzle
             {
                 if (state[i] == 0)
                 {
-                    return (i % Settings.SIZE, i / Settings.SIZE);
+                    return (i % Settings.Size, i / Settings.Size);
                 }
             }
             return (-1, -1);
@@ -180,7 +180,7 @@ namespace N_Puzzle
 
         public static bool IsValidState(int[] state)
         {
-            if (state.Length != Settings.SIZE * Settings.SIZE)
+            if (state.Length != Settings.Size * Settings.Size)
             {
                 return false;
             }
@@ -213,7 +213,7 @@ namespace N_Puzzle
             for (int i = 0; i < state.Length; i++)
             {
                 Console.Write(state[i] + " ");
-                if (i % Settings.SIZE == Settings.SIZE - 1)
+                if (i % Settings.Size == Settings.Size - 1)
                 {
                     Console.WriteLine();
                 }
@@ -237,15 +237,20 @@ namespace N_Puzzle
             return currenState;
         }
 
-        public static long EncodeNode(int[] state)
+        public static string EncodeNode(int[] state, int depth = -1)
         {
-            long res = 0;
-            for (int i = 0; i < state.Length; i++)
-            {
-                res |= (long)state[i];
-                res <<= 4;
-            }
-            return res;
+            byte[] data = new byte[(state.Length + 1) * sizeof(int)];
+            byte[] depthBytes = BitConverter.GetBytes(depth);
+            Buffer.BlockCopy(state, 0, data, 0, state.Length * sizeof(int));
+            Buffer.BlockCopy(depthBytes, 0, data, state.Length * sizeof(int), depthBytes.Length);
+            return Encoding.ASCII.GetString(data);
+        }
+
+        public static void Swap<T>(this List<T> list, int index1, int index2)
+        {
+            T temp = list[index1];
+            list[index1] = list[index2];
+            list[index2] = temp;
         }
     }
 }

@@ -15,11 +15,11 @@ namespace N_Puzzle.Algorithms
         public event Action OnSolvingCompleted;
         public event Action OnSolvingFailed;
 
-        private HashSet<long> closed;
+        private HashSet<string> closed;
 
         public BFS()
         {
-            closed = new HashSet<long>();
+            closed = new HashSet<string>();
         }
 
         public void Solve(int[] start, int[] goal)

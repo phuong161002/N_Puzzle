@@ -13,11 +13,12 @@ namespace N_Puzzle.Algorithms
         public Node GoalNode { get; private set; }
         public SolvingStatus Status { get; private set; }
 
-        private HashSet<long> closed;
+
+        private HashSet<string> closed;
 
         public AStar()
         {
-            closed = new HashSet<long>();
+            closed = new HashSet<string>();
         }
 
         public event Action OnSolvingCompleted;
