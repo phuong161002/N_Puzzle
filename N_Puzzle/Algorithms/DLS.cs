@@ -52,6 +52,7 @@ namespace N_Puzzle.Algorithms
                         if (Utils.TryMove(currentNode, (MoveDirection)i, out Node nextNode)
                             && !closed.Contains(Utils.EncodeNode(nextNode.state, nextNode.depth)))
                         {
+                            Node.NumNodesInTree++;
                             openNodes.Push(nextNode);
                         }
                     }

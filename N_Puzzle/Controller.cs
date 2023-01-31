@@ -54,7 +54,7 @@ namespace N_Puzzle
             parent.Log($"Can not solve!\n" +
                 $"Solving Time : {(int)_stopwatch.Elapsed.TotalMilliseconds}ms\n" +
                 $"Num Evaluated Nodes: {Node.NumEvaluatedNodes}\n" +
-                $"Used Memory: {_solver.GetUsedMemory() / 1024} KB");
+                $"Num Nodes in Tree: {Node.NumNodesInTree}");
         }
 
         private void _solver_OnSolvingCompleted()
@@ -62,8 +62,9 @@ namespace N_Puzzle
             parent.Log($"Solved!\n" +
                 $"Solving Time : {(int)_stopwatch.Elapsed.TotalMilliseconds}ms\n" +
                 $"Num Evaluated Nodes: {Node.NumEvaluatedNodes}\n" +
-                $"Depth: {_solver.GoalNode.depth}\n" +
-                $"Used Memory: {_solver.GetUsedMemory() / 1024} KB");
+                //$"Num Generated Nodes: {Node.NumGeneratedNode}\n" +
+                $"Num Nodes in Tree: {Node.NumNodesInTree}\n" +
+                $"Depth: {_solver.GoalNode.depth}");
             var listMove = TraceMove();
             parent.PerformMoves(listMove);
         }

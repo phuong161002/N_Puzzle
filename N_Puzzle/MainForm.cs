@@ -19,6 +19,7 @@ namespace N_Puzzle
         private Image[] myImages;
         private Controller controller;
         private int[] lastShufferState;
+        public long LastMemoryUsage;
 
         public MainForm()
         {
@@ -101,12 +102,14 @@ namespace N_Puzzle
         {
             panel1.Enabled = false;
             btnStopSolving.Enabled = true;
+            LastMemoryUsage = GetMemoryUsage();
             controller.Solve((SolverType)cbSolveType.SelectedItem, controller.CurrentState, Settings.DefaultGoalState, () => EndSolving());
         }
 
         private void EndSolving()
         {
             panel1.Enabled = true;
+            GC.Collect();
             btnStopSolving.Enabled = false;
             UpdateGameView(Settings.StartState);
         }
@@ -121,6 +124,13 @@ namespace N_Puzzle
             label4.Text = log;
         }
 
+        public long GetMemoryUsage()
+        {
+            Process proc = Process.GetCurrentProcess();
+            proc.Refresh();
+            return proc.PrivateMemorySize64;
+        }
+
         private void trackBarSpeed_Scroll(object sender, EventArgs e)
         {
             var trackBar = (TrackBar)sender;
@@ -132,9 +142,7 @@ namespace N_Puzzle
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            Process proc = Process.GetCurrentProcess();
-            proc.Refresh();
-            var memUsage = proc.PrivateMemorySize64 / 1024 / 1024;
+            var memUsage = GetMemoryUsage() / 1024 / 1024;
             if (memUsage > 500)
             {
                 Log("Out of memory! Can not solve");

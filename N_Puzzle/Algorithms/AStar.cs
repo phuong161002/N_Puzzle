@@ -32,6 +32,7 @@ namespace N_Puzzle.Algorithms
             Status = SolvingStatus.Solving;
             Node startNode = new Node(start);
             leaves = new PriorityQueue<Node>();
+            Node.NumNodesInTree++;
             leaves.Enqueue(startNode);
             Node currentNode;
             closed.Clear();
@@ -53,6 +54,7 @@ namespace N_Puzzle.Algorithms
                 {
                     if (Utils.TryMove(currentNode, (MoveDirection)i, out Node nextNode) && !CheckIfStateExisted(nextNode.state))
                     {
+                        Node.NumNodesInTree++;
                         leaves.Enqueue(nextNode);
                     }
                 }

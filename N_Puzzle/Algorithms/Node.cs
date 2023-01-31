@@ -10,6 +10,8 @@ namespace N_Puzzle.Algorithms
     public class Node: IComparable<Node>
     {
         public static int NumEvaluatedNodes = 0;
+        public static int NumGeneratedNode = 0;
+        public static int NumNodesInTree = 0;
         public int[] state { get; set; }
         public Node parent { get; set; }
         public int depth { get; set; }
@@ -20,7 +22,7 @@ namespace N_Puzzle.Algorithms
         public Node(int[] state)
         {
             this.state = state;
-            NumEvaluatedNodes++;
+            NumGeneratedNode++;
         }
 
         public Node Clone()
@@ -39,7 +41,9 @@ namespace N_Puzzle.Algorithms
 
         public static void Reset()
         {
+            NumGeneratedNode = 0;
             NumEvaluatedNodes = 0;
+            NumNodesInTree = 0;
         }
 
         public int numWrongTiles(int[] goalState)
