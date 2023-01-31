@@ -25,7 +25,7 @@ namespace N_Puzzle
 
         public void Solve(SolverType type, int[] startState, int[] goalState, Action callback = null)
         {
-            if(_solver != null && _solver.Status == SolvingStatus.Solving)
+            if (_solver != null && _solver.Status == SolvingStatus.Solving)
             {
                 return;
             }
@@ -53,7 +53,8 @@ namespace N_Puzzle
         {
             parent.Log($"Can not solve!\n" +
                 $"Solving Time : {(int)_stopwatch.Elapsed.TotalMilliseconds}ms\n" +
-                $"Num Evaluated Nodes: {Node.NumEvaluatedNodes}");
+                $"Num Evaluated Nodes: {Node.NumEvaluatedNodes}\n" +
+                $"Used Memory: {_solver.GetUsedMemory() / 1024} KB");
         }
 
         private void _solver_OnSolvingCompleted()
@@ -61,14 +62,15 @@ namespace N_Puzzle
             parent.Log($"Solved!\n" +
                 $"Solving Time : {(int)_stopwatch.Elapsed.TotalMilliseconds}ms\n" +
                 $"Num Evaluated Nodes: {Node.NumEvaluatedNodes}\n" +
-                $"Depth: {_solver.GoalNode.depth}");
+                $"Depth: {_solver.GoalNode.depth}\n" +
+                $"Used Memory: {_solver.GetUsedMemory() / 1024} KB");
             var listMove = TraceMove();
             parent.PerformMoves(listMove);
         }
 
         private ISolver GetSolver(SolverType type)
         {
-            switch(type)
+            switch (type)
             {
                 case SolverType.AStar_Manhattan:
                     Settings.TypeHeuristic = 0;
@@ -91,7 +93,7 @@ namespace N_Puzzle
         {
             var currentNode = _solver.GoalNode;
             var listMove = new List<int[]>();
-            while(currentNode != null)
+            while (currentNode != null)
             {
                 listMove.Add(currentNode.state);
 
@@ -104,7 +106,7 @@ namespace N_Puzzle
 
         public void StopSolving()
         {
-            if(solvingThread != null)
+            if (solvingThread != null)
             {
                 solvingThread.Abort();
                 callbackSolving?.Invoke();

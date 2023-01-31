@@ -16,17 +16,20 @@ namespace N_Puzzle.Algorithms
         public event Action OnSolvingFailed;
 
         private HashSet<string> closed;
+        private Queue<Node> openNodes;
 
         public BFS()
         {
             closed = new HashSet<string>();
+            openNodes = new Queue<Node>();
         }
 
         public void Solve(int[] start, int[] goal)
         {
             Status = SolvingStatus.Solving;
             Node startNode = new Node(start);
-            Queue<Node> openNodes = new Queue<Node>();
+
+            openNodes.Clear();
             openNodes.Enqueue(startNode);
 
             Node currentNode;

@@ -15,10 +15,13 @@ namespace N_Puzzle.Algorithms
 
 
         private HashSet<string> closed;
+        PriorityQueue<Node> leaves;
+
 
         public AStar()
         {
             closed = new HashSet<string>();
+            leaves = new PriorityQueue<Node>();
         }
 
         public event Action OnSolvingCompleted;
@@ -28,7 +31,7 @@ namespace N_Puzzle.Algorithms
         {
             Status = SolvingStatus.Solving;
             Node startNode = new Node(start);
-            PriorityQueue<Node> leaves = new PriorityQueue<Node>();
+            leaves = new PriorityQueue<Node>();
             leaves.Enqueue(startNode);
             Node currentNode;
             closed.Clear();

@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using System.Drawing;
 using N_Puzzle.Properties;
 using N_Puzzle.Algorithms;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace N_Puzzle
 {
@@ -270,6 +272,19 @@ namespace N_Puzzle
             T temp = list[index1];
             list[index1] = list[index2];
             list[index2] = temp;
+        }
+
+        public static long GetSizeOfObject(object o)
+        {
+            long size = 0;
+            using (Stream s = new MemoryStream())
+            {
+                BinaryFormatter formatter = new BinaryFormatter();
+                formatter.Serialize(s, o);
+                size = s.Length;
+            }
+
+            return size;
         }
     }
 }

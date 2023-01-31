@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace N_Puzzle.Algorithms
 {
+    [Serializable]
     public class Node: IComparable<Node>
     {
         public static int NumEvaluatedNodes = 0;

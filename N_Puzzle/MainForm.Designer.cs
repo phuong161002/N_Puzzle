@@ -193,7 +193,7 @@ namespace N_Puzzle
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(15, 343);
+            this.label4.Location = new System.Drawing.Point(15, 327);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(31, 13);
             this.label4.TabIndex = 11;

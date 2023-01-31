@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace N_Puzzle.Algorithms
 {
+    [Serializable]
     public class PriorityQueue<T> where T : IComparable<T>
     {
         private List<T> _items;
