@@ -26,6 +26,7 @@ namespace N_Puzzle.Algorithms
 
         public void Solve(int[] start, int[] goal)
         {
+            Status = SolvingStatus.Solving;
             Node startNode = new Node(start);
             PriorityQueue<Node> leaves = new PriorityQueue<Node>();
             leaves.Enqueue(startNode);
@@ -38,6 +39,7 @@ namespace N_Puzzle.Algorithms
                 if (Utils.IsGoalState(currentNode.state, goal))
                 {
                     GoalNode = currentNode;
+                    Status = SolvingStatus.Success;
                     OnSolvingCompleted?.Invoke();
                     return;
                 }
@@ -54,6 +56,7 @@ namespace N_Puzzle.Algorithms
             }
 
             GoalNode = null;
+            Status = SolvingStatus.Failed;
             OnSolvingFailed?.Invoke();
         }
 

@@ -38,8 +38,6 @@ namespace N_Puzzle
             return false;
         }
 
-
-
         public static Node Move(Node currentNode, MoveDirection direction)
         {
             int[] currentState = (int[])currentNode.state.Clone();
@@ -223,18 +221,39 @@ namespace N_Puzzle
         public static int[] Shuffer(int[] state, int iterations)
         {
             Random random = new Random();
-            int[] currenState = (int[])state.Clone();
-            for (int i = 0; i < iterations; i++)
+            int[] currentState = (int[])state.Clone();
+
+            int num = 0;
+            while (num < iterations)
             {
-                int num = random.Next(0, 4);
-                var newState = Move(currenState, (MoveDirection)num);
-                if (newState != null)
+                int direction = random.Next(0, 4);
+                if(CanMoveTo((MoveDirection)direction, currentState))
                 {
-                    currenState = newState;
+                    currentState = Move(currentState, (MoveDirection)direction);
+                    num++;
                 }
             }
 
-            return currenState;
+            return currentState;
+        }
+
+        private static bool CanMoveTo(MoveDirection direction, int[] state)
+        {
+            int x, y;
+            (x, y) = FindZeroPos(state);
+            switch (direction)
+            {
+                case MoveDirection.Up:
+                    return y > 0;
+                case MoveDirection.Down:
+                    return y < Settings.Size - 1;
+                case MoveDirection.Left:
+                    return x > 0;
+                case MoveDirection.Right:
+                    return x < Settings.Size - 1;
+                default:
+                    return false;
+            }
         }
 
         public static string EncodeNode(int[] state, int depth = -1)

@@ -177,7 +177,7 @@ namespace N_Puzzle
 
         private void btnStopSolving_Click(object sender, EventArgs e)
         {
-            controller.StopSolving();
+            StopSolving();
         }
 
         private void button2_Click(object sender, EventArgs e)

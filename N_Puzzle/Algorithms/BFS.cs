@@ -24,18 +24,20 @@ namespace N_Puzzle.Algorithms
 
         public void Solve(int[] start, int[] goal)
         {
+            Status = SolvingStatus.Solving;
             Node startNode = new Node(start);
-            Queue<Node> openNode = new Queue<Node>();
-            openNode.Enqueue(startNode);
+            Queue<Node> openNodes = new Queue<Node>();
+            openNodes.Enqueue(startNode);
 
             Node currentNode;
-            while (openNode.Count > 0)
+            while (openNodes.Count > 0)
             {
-                currentNode = openNode.Dequeue();
+                currentNode = openNodes.Dequeue();
 
                 if (Utils.IsGoalState(currentNode.state, goal))
                 {
                     GoalNode = currentNode;
+                    Status = SolvingStatus.Success;
                     OnSolvingCompleted?.Invoke();
                     return;
                 }
@@ -47,12 +49,13 @@ namespace N_Puzzle.Algorithms
                     if (Utils.TryMove(currentNode, (MoveDirection)i, out Node nextNode)
                         && !closed.Contains(Utils.EncodeNode(nextNode.state)))
                     {
-                        openNode.Enqueue(nextNode);
+                        openNodes.Enqueue(nextNode);
                     }
                 }
             }
 
             GoalNode = null;
+            Status = SolvingStatus.Failed;
             OnSolvingFailed?.Invoke();
         }
     }

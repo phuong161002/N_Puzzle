@@ -32,6 +32,8 @@ namespace N_Puzzle
             this.components = new System.ComponentModel.Container();
             this.grbGameView = new System.Windows.Forms.GroupBox();
             this.grbControl = new System.Windows.Forms.GroupBox();
+            this.button2 = new System.Windows.Forms.Button();
+            this.btnStopSolving = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
             this.tbGridSize = new System.Windows.Forms.TextBox();
             this.btnSetSize = new System.Windows.Forms.Button();
@@ -46,8 +48,6 @@ namespace N_Puzzle
             this.label2 = new System.Windows.Forms.Label();
             this.trackBarSpeed = new System.Windows.Forms.TrackBar();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.btnStopSolving = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
             this.grbControl.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarSpeed)).BeginInit();
@@ -73,10 +73,31 @@ namespace N_Puzzle
             this.grbControl.Controls.Add(this.trackBarSpeed);
             this.grbControl.Location = new System.Drawing.Point(445, 13);
             this.grbControl.Name = "grbControl";
-            this.grbControl.Size = new System.Drawing.Size(249, 427);
+            this.grbControl.Size = new System.Drawing.Size(266, 427);
             this.grbControl.TabIndex = 1;
             this.grbControl.TabStop = false;
             this.grbControl.Text = "Control";
+            // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(17, 227);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(82, 37);
+            this.button2.TabIndex = 16;
+            this.button2.Text = "Clean Ram";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // btnStopSolving
+            // 
+            this.btnStopSolving.Enabled = false;
+            this.btnStopSolving.Location = new System.Drawing.Point(144, 227);
+            this.btnStopSolving.Name = "btnStopSolving";
+            this.btnStopSolving.Size = new System.Drawing.Size(82, 37);
+            this.btnStopSolving.TabIndex = 15;
+            this.btnStopSolving.Text = "Stop Solving";
+            this.btnStopSolving.UseVisualStyleBackColor = true;
+            this.btnStopSolving.Click += new System.EventHandler(this.btnStopSolving_Click);
             // 
             // panel1
             // 
@@ -91,7 +112,7 @@ namespace N_Puzzle
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(3, 16);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(243, 205);
+            this.panel1.Size = new System.Drawing.Size(260, 205);
             this.panel1.TabIndex = 12;
             // 
             // tbGridSize
@@ -118,7 +139,7 @@ namespace N_Puzzle
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(82, 37);
             this.button1.TabIndex = 12;
-            this.button1.Text = "LastShuffer";
+            this.button1.Text = "Last Shuffle";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.btnLastShufferState_Click);
             // 
@@ -129,7 +150,7 @@ namespace N_Puzzle
             this.cbSolveType.FormattingEnabled = true;
             this.cbSolveType.Location = new System.Drawing.Point(102, 108);
             this.cbSolveType.Name = "cbSolveType";
-            this.cbSolveType.Size = new System.Drawing.Size(121, 28);
+            this.cbSolveType.Size = new System.Drawing.Size(156, 28);
             this.cbSolveType.TabIndex = 11;
             // 
             // btnSolve
@@ -156,7 +177,7 @@ namespace N_Puzzle
             this.btnShuffer.Name = "btnShuffer";
             this.btnShuffer.Size = new System.Drawing.Size(82, 37);
             this.btnShuffer.TabIndex = 8;
-            this.btnShuffer.Text = "Shuffer";
+            this.btnShuffer.Text = "Shuffle";
             this.btnShuffer.UseVisualStyleBackColor = true;
             this.btnShuffer.Click += new System.EventHandler(this.btnShuffer_Click);
             // 
@@ -213,27 +234,6 @@ namespace N_Puzzle
             this.timer1.Enabled = true;
             this.timer1.Interval = 1000;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
-            // 
-            // btnStopSolving
-            // 
-            this.btnStopSolving.Enabled = false;
-            this.btnStopSolving.Location = new System.Drawing.Point(144, 227);
-            this.btnStopSolving.Name = "btnStopSolving";
-            this.btnStopSolving.Size = new System.Drawing.Size(82, 37);
-            this.btnStopSolving.TabIndex = 15;
-            this.btnStopSolving.Text = "Stop Solving";
-            this.btnStopSolving.UseVisualStyleBackColor = true;
-            this.btnStopSolving.Click += new System.EventHandler(this.btnStopSolving_Click);
-            // 
-            // button2
-            // 
-            this.button2.Location = new System.Drawing.Point(17, 227);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(82, 37);
-            this.button2.TabIndex = 16;
-            this.button2.Text = "Clean Ram";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // MainForm
             // 

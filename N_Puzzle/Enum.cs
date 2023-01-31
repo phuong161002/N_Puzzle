@@ -28,7 +28,6 @@ namespace N_Puzzle
         None,
         Solving,
         Success,
-        Failed_OutOfMem,
-        Failed_TimeOut,
+        Failed
     }
 }

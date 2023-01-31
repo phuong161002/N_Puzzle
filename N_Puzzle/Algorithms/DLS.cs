@@ -24,19 +24,21 @@ namespace N_Puzzle.Algorithms
 
         public void Solve(int[] start, int[] goal)
         {
+            Status = SolvingStatus.Solving;
             Node startNode = new Node(start);
-            Stack<Node> openNode = new Stack<Node>();
-            openNode.Push(startNode);
+            Stack<Node> openNodes = new Stack<Node>();
+            openNodes.Push(startNode);
             closed.Clear();
 
             Node currentNode;
-            while (openNode.Count > 0)
+            while (openNodes.Count > 0)
             {
-                currentNode = openNode.Pop();
+                currentNode = openNodes.Pop();
 
                 if (Utils.IsGoalState(currentNode.state, goal))
                 {
                     GoalNode = currentNode;
+                    Status = SolvingStatus.Success;
                     OnSolvingCompleted?.Invoke();
                     return;
                 }
@@ -50,13 +52,14 @@ namespace N_Puzzle.Algorithms
                         if (Utils.TryMove(currentNode, (MoveDirection)i, out Node nextNode)
                             && !closed.Contains(Utils.EncodeNode(nextNode.state, nextNode.depth)))
                         {
-                            openNode.Push(nextNode);
+                            openNodes.Push(nextNode);
                         }
                     }
                 }
             }
 
             GoalNode = null;
+            Status = SolvingStatus.Failed;
             OnSolvingFailed?.Invoke();
         }
     }
