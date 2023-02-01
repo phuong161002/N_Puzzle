@@ -13,22 +13,24 @@ namespace N_Puzzle
     {
         private ISolver _solver;
         private MainForm parent;
-        private Stopwatch _stopwatch;
         private Thread solvingThread;
         public int[] CurrentState;
         private Action callbackSolving;
+        private bool showMove;
+        public bool IsSolving => _solver != null && _solver.Status == SolvingStatus.Solving && (solvingThread != null && solvingThread.IsAlive);
 
         public Controller(MainForm mainForm)
         {
             parent = mainForm;
         }
 
-        public void Solve(SolverType type, int[] startState, int[] goalState, Action callback = null)
+        public void Solve(SolverType type, int[] startState, int[] goalState, Action callback = null, bool showMove = true)
         {
-            if (_solver != null && _solver.Status == SolvingStatus.Solving)
+            if (IsSolving)
             {
                 return;
             }
+            this.showMove = showMove;
             Node.Reset();
             callbackSolving = callback;
             _solver = GetSolver(type);
@@ -37,9 +39,7 @@ namespace N_Puzzle
             solvingThread = new Thread(() =>
             {
                 parent.Log("Solving...");
-                _stopwatch = Stopwatch.StartNew();
                 _solver.Solve(startState, goalState);
-                _stopwatch.Stop();
                 _solver = null;
                 GC.Collect();
                 callback?.Invoke();
@@ -59,14 +59,18 @@ namespace N_Puzzle
 
         private void _solver_OnSolvingCompleted()
         {
+            //Console.WriteLine($"{_solver.SolvingTime}|{Node.NodesAlreadyEvaluated}|{Node.NodesInTree}|{_solver.GoalNode.depth}");
             parent.Log($"Solved!\n" +
                 $"Solving Time : {_solver.SolvingTime}ms\n" +
                 $"Nodes already evaluated: {Node.NodesAlreadyEvaluated}\n" +
                 //$"Num Generated Nodes: {Node.NumGeneratedNode}\n" +
                 $"Nodes in Tree: {Node.NodesInTree}\n" +
                 $"Depth: {_solver.GoalNode.depth}");
-            var listMove = TraceMove();
-            parent.PerformMoves(listMove);
+            if(showMove)
+            {
+                var listMove = TraceMove();
+                parent.PerformMoves(listMove);
+            }
         }
 
         private ISolver GetSolver(SolverType type)
@@ -114,7 +118,6 @@ namespace N_Puzzle
                 callbackSolving = null;
                 solvingThread = null;
                 _solver = null;
-                _stopwatch = null;
                 GC.Collect();
             }
         }

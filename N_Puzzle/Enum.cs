@@ -25,7 +25,6 @@ namespace N_Puzzle
 
     public enum SolvingStatus
     {
-        None,
         Solving,
         Success,
         Failed

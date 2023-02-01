@@ -118,9 +118,10 @@ namespace N_Puzzle
         {
             controller.StopSolving();
         }
-        
+
         public void Log(string log)
         {
+            //Console.WriteLine(log);
             label4.Text = log;
         }
 
@@ -133,19 +134,19 @@ namespace N_Puzzle
 
         protected override void OnKeyDown(KeyEventArgs e)
         {
-            //base.OnKeyDown(e);
+            base.OnKeyDown(e);
             switch (e.KeyCode)
             {
-                case Keys.Up:
+                case Keys.W:
                     MoveUp();
                     break;
-                case Keys.Down:
+                case Keys.S:
                     MoveDown();
                     break;
-                case Keys.Left:
+                case Keys.A:
                     MoveLeft();
                     break;
-                case Keys.Right:
+                case Keys.D:
                     MoveRight();
                     break;
             }
@@ -188,7 +189,7 @@ namespace N_Puzzle
         private void trackBarSpeed_Scroll(object sender, EventArgs e)
         {
             var trackBar = (TrackBar)sender;
-            if(trackBar.Value >= 0 && trackBar.Value < Settings.DelayMoveArray.Length)
+            if (trackBar.Value >= 0 && trackBar.Value < Settings.DelayMoveArray.Length)
             {
                 Settings.DelayMove = Settings.DelayMoveArray[trackBar.Value];
             }
@@ -210,7 +211,7 @@ namespace N_Puzzle
             if (int.TryParse(tbShufferItters.Text, out int num))
             {
                 var state = Settings.DefaultGoalState;
-                var newState = Utils.Shuffer(state, num);
+                var newState = Utils.Shuffle(state, num);
                 lastShufferState = newState;
                 UpdateGameView(newState);
             }
@@ -245,6 +246,49 @@ namespace N_Puzzle
         private void button2_Click(object sender, EventArgs e)
         {
             GC.Collect();
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            new Thread(() =>
+            {
+                for (int i = 0; i < 10; i++)
+                {
+                    var state = Utils.Shuffle(Settings.DefaultGoalState, 1000);
+                    for (int j = 0; j < state.Length; j++)
+                    {
+                        Console.Write(state[j] + ",");
+                    }
+                    Console.WriteLine();
+
+
+                    for (int j = 0; j < 5; j++)
+                    {
+                        SolverType solverType = (SolverType)j;
+                        Console.WriteLine(solverType.ToString());
+                        controller.Solve(solverType, state, Settings.DefaultGoalState, showMove: false);
+                        Thread.Sleep(2000);
+                    }
+
+                    //Console.WriteLine();
+                    //Console.WriteLine("AStar_Manhattan");
+                    //controller.Solve(SolverType.AStar_Manhattan, state, Settings.DefaultGoalState, showMove: false);
+                    //Thread.Sleep(1000);
+                    //Console.WriteLine("AStar_MisplacedTiles");
+                    //controller.Solve(SolverType.AStar_MisplacedTiles, state, Settings.DefaultGoalState, showMove: false);
+                    //Thread.Sleep(1000);
+                    //Console.WriteLine("BFS");
+                    //controller.Solve(SolverType.BFS, state, Settings.DefaultGoalState, showMove: false);
+                    //Thread.Sleep(3000);
+                    //Console.WriteLine("DFS");
+                    //controller.Solve(SolverType.DFS, state, Settings.DefaultGoalState, showMove: false);
+                    //Thread.Sleep(3000);
+                    //Console.WriteLine("DLS");
+                    //controller.Solve(SolverType.DLS, state, Settings.DefaultGoalState, showMove: false);
+                    //Thread.Sleep(3000);
+                }
+            })
+            { IsBackground = true }.Start();
         }
     }
 }

@@ -48,6 +48,7 @@ namespace N_Puzzle
             this.label2 = new System.Windows.Forms.Label();
             this.trackBarSpeed = new System.Windows.Forms.TrackBar();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.button3 = new System.Windows.Forms.Button();
             this.grbControl.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarSpeed)).BeginInit();
@@ -64,6 +65,7 @@ namespace N_Puzzle
             // 
             // grbControl
             // 
+            this.grbControl.Controls.Add(this.button3);
             this.grbControl.Controls.Add(this.button2);
             this.grbControl.Controls.Add(this.btnStopSolving);
             this.grbControl.Controls.Add(this.panel1);
@@ -235,6 +237,17 @@ namespace N_Puzzle
             this.timer1.Interval = 1000;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(176, 384);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(82, 37);
+            this.button3.TabIndex = 17;
+            this.button3.Text = "Test";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Visible = false;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -273,6 +286,7 @@ namespace N_Puzzle
         private System.Windows.Forms.Button btnShuffer;
         private System.Windows.Forms.Button btnStopSolving;
         private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button button3;
     }
 }
 

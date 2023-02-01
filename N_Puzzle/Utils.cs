@@ -220,7 +220,7 @@ namespace N_Puzzle
             }
         }
 
-        public static int[] Shuffer(int[] state, int iterations)
+        public static int[] Shuffle(int[] state, int iterations)
         {
             Random random = new Random();
             int[] currentState = (int[])state.Clone();
