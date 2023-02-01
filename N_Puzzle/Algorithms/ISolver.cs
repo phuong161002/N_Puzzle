@@ -10,6 +10,7 @@ namespace N_Puzzle.Algorithms
     {
         Node GoalNode { get; }
         SolvingStatus Status { get; }
+        int SolvingTime { get; }
         void Solve(int[] start, int[] goal);
         event Action OnSolvingCompleted;
         event Action OnSolvingFailed;

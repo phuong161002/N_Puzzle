@@ -12,6 +12,8 @@ namespace N_Puzzle.Algorithms
 
         public SolvingStatus Status { get; private set; }
 
+        public int SolvingTime { get; private set; }
+
         public event Action OnSolvingCompleted;
         public event Action OnSolvingFailed;
 
@@ -27,6 +29,7 @@ namespace N_Puzzle.Algorithms
         public void Solve(int[] start, int[] goal)
         {
             Status = SolvingStatus.Solving;
+            var timeStart = DateTime.Now;
             Node startNode = new Node(start);
 
             openNodes.Clear();
@@ -39,25 +42,27 @@ namespace N_Puzzle.Algorithms
 
                 if (Utils.IsGoalState(currentNode.state, goal))
                 {
+                    SolvingTime = (int)(DateTime.Now - timeStart).TotalMilliseconds;
                     GoalNode = currentNode;
                     Status = SolvingStatus.Success;
                     OnSolvingCompleted?.Invoke();
                     return;
                 }
 
-                Node.NumEvaluatedNodes++;
+                Node.NodesAlreadyEvaluated++;
                 closed.Add(Utils.EncodeNode(currentNode.state));
                 for (int i = 0; i < 4; i++)
                 {
                     if (Utils.TryMove(currentNode, (MoveDirection)i, out Node nextNode)
                         && !closed.Contains(Utils.EncodeNode(nextNode.state)))
                     {
-                        Node.NumNodesInTree++;
+                        Node.NodesInTree++;
                         openNodes.Enqueue(nextNode);
                     }
                 }
             }
 
+            SolvingTime = (int)(DateTime.Now - timeStart).TotalMilliseconds;
             GoalNode = null;
             Status = SolvingStatus.Failed;
             OnSolvingFailed?.Invoke();

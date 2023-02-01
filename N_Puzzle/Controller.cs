@@ -52,18 +52,18 @@ namespace N_Puzzle
         private void _solver_OnSolvingFailed()
         {
             parent.Log($"Can not solve!\n" +
-                $"Solving Time : {(int)_stopwatch.Elapsed.TotalMilliseconds}ms\n" +
-                $"Num Evaluated Nodes: {Node.NumEvaluatedNodes}\n" +
-                $"Num Nodes in Tree: {Node.NumNodesInTree}");
+                $"Solving Time : {_solver.SolvingTime}ms\n" +
+                $"Num Evaluated Nodes: {Node.NodesAlreadyEvaluated}\n" +
+                $"Num Nodes in Tree: {Node.NodesInTree}");
         }
 
         private void _solver_OnSolvingCompleted()
         {
             parent.Log($"Solved!\n" +
-                $"Solving Time : {(int)_stopwatch.Elapsed.TotalMilliseconds}ms\n" +
-                $"Num Evaluated Nodes: {Node.NumEvaluatedNodes}\n" +
+                $"Solving Time : {_solver.SolvingTime}ms\n" +
+                $"Nodes already evaluated: {Node.NodesAlreadyEvaluated}\n" +
                 //$"Num Generated Nodes: {Node.NumGeneratedNode}\n" +
-                $"Num Nodes in Tree: {Node.NumNodesInTree}\n" +
+                $"Nodes in Tree: {Node.NodesInTree}\n" +
                 $"Depth: {_solver.GoalNode.depth}");
             var listMove = TraceMove();
             parent.PerformMoves(listMove);

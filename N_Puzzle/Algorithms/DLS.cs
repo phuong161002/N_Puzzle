@@ -12,6 +12,8 @@ namespace N_Puzzle.Algorithms
 
         public SolvingStatus Status { get; private set; }
 
+        public int SolvingTime { get; private set; }
+
         public event Action OnSolvingCompleted;
         public event Action OnSolvingFailed;
 
@@ -25,6 +27,7 @@ namespace N_Puzzle.Algorithms
         public void Solve(int[] start, int[] goal)
         {
             Status = SolvingStatus.Solving;
+            var timeStart = DateTime.Now;
             Node startNode = new Node(start);
             Stack<Node> openNodes = new Stack<Node>();
             openNodes.Push(startNode);
@@ -37,12 +40,13 @@ namespace N_Puzzle.Algorithms
 
                 if (Utils.IsGoalState(currentNode.state, goal))
                 {
+                    SolvingTime = (int)(DateTime.Now - timeStart).TotalMilliseconds;
                     GoalNode = currentNode;
                     Status = SolvingStatus.Success;
                     OnSolvingCompleted?.Invoke();
                     return;
                 }
-                Node.NumEvaluatedNodes++;
+                Node.NodesAlreadyEvaluated++;
 
                 closed.Add(Utils.EncodeNode(currentNode.state, currentNode.depth));
                 if (currentNode.depth < Settings.MaxDepthDLS)
@@ -52,13 +56,14 @@ namespace N_Puzzle.Algorithms
                         if (Utils.TryMove(currentNode, (MoveDirection)i, out Node nextNode)
                             && !closed.Contains(Utils.EncodeNode(nextNode.state, nextNode.depth)))
                         {
-                            Node.NumNodesInTree++;
+                            Node.NodesInTree++;
                             openNodes.Push(nextNode);
                         }
                     }
                 }
             }
 
+            SolvingTime = (int)(DateTime.Now - timeStart).TotalMilliseconds;
             GoalNode = null;
             Status = SolvingStatus.Failed;
             OnSolvingFailed?.Invoke();

@@ -11,17 +11,19 @@ namespace N_Puzzle.Algorithms
     public class AStar : ISolver
     {
         public Node GoalNode { get; private set; }
+
         public SolvingStatus Status { get; private set; }
 
+        public int SolvingTime { get; private set; }
 
         private HashSet<string> closed;
-        PriorityQueue<Node> leaves;
+        PriorityQueue<Node> fringe;
 
 
         public AStar()
         {
             closed = new HashSet<string>();
-            leaves = new PriorityQueue<Node>();
+            fringe = new PriorityQueue<Node>();
         }
 
         public event Action OnSolvingCompleted;
@@ -30,36 +32,39 @@ namespace N_Puzzle.Algorithms
         public void Solve(int[] start, int[] goal)
         {
             Status = SolvingStatus.Solving;
+            var timeStart = DateTime.Now;
             Node startNode = new Node(start);
-            leaves = new PriorityQueue<Node>();
-            Node.NumNodesInTree++;
-            leaves.Enqueue(startNode);
+            fringe = new PriorityQueue<Node>();
+            Node.NodesInTree++;
+            fringe.Enqueue(startNode);
             Node currentNode;
             closed.Clear();
-            while (!leaves.IsEmpty)
+            while (!fringe.IsEmpty)
             {
-                currentNode = leaves.Dequeue();
+                currentNode = fringe.Dequeue();
 
                 if (Utils.IsGoalState(currentNode.state, goal))
                 {
+                    SolvingTime = (int)(DateTime.Now - timeStart).TotalMilliseconds;
                     GoalNode = currentNode;
                     Status = SolvingStatus.Success;
                     OnSolvingCompleted?.Invoke();
                     return;
                 }
 
-                Node.NumEvaluatedNodes++;
+                Node.NodesAlreadyEvaluated++;
                 closed.Add(Utils.EncodeNode(currentNode.state));
                 for (int i = 0; i < 4; i++)
                 {
                     if (Utils.TryMove(currentNode, (MoveDirection)i, out Node nextNode) && !CheckIfStateExisted(nextNode.state))
                     {
-                        Node.NumNodesInTree++;
-                        leaves.Enqueue(nextNode);
+                        Node.NodesInTree++;
+                        fringe.Enqueue(nextNode);
                     }
                 }
             }
 
+            SolvingTime = (int)(DateTime.Now - timeStart).TotalMilliseconds;
             GoalNode = null;
             Status = SolvingStatus.Failed;
             OnSolvingFailed?.Invoke();
