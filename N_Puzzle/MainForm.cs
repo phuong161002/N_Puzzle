@@ -131,6 +131,60 @@ namespace N_Puzzle
             return proc.PrivateMemorySize64;
         }
 
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            //base.OnKeyDown(e);
+            switch (e.KeyCode)
+            {
+                case Keys.Up:
+                    MoveUp();
+                    break;
+                case Keys.Down:
+                    MoveDown();
+                    break;
+                case Keys.Left:
+                    MoveLeft();
+                    break;
+                case Keys.Right:
+                    MoveRight();
+                    break;
+            }
+            //Utils.Print(controller.CurrentState);
+            UpdateGameView(controller.CurrentState);
+        }
+
+        public void MoveUp()
+        {
+            if (Utils.TryMove(new Node(controller.CurrentState), MoveDirection.Up, out Node nextNode))
+            {
+                controller.CurrentState = nextNode.state;
+            }
+        }
+
+        public void MoveDown()
+        {
+            if (Utils.TryMove(new Node(controller.CurrentState), MoveDirection.Down, out Node nextNode))
+            {
+                controller.CurrentState = nextNode.state;
+            }
+        }
+
+        public void MoveLeft()
+        {
+            if (Utils.TryMove(new Node(controller.CurrentState), MoveDirection.Left, out Node nextNode))
+            {
+                controller.CurrentState = nextNode.state;
+            }
+        }
+
+        public void MoveRight()
+        {
+            if (Utils.TryMove(new Node(controller.CurrentState), MoveDirection.Right, out Node nextNode))
+            {
+                controller.CurrentState = nextNode.state;
+            }
+        }
+
         private void trackBarSpeed_Scroll(object sender, EventArgs e)
         {
             var trackBar = (TrackBar)sender;
