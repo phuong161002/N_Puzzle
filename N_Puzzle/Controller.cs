@@ -53,8 +53,8 @@ namespace N_Puzzle
         {
             parent.Log($"Can not solve!\n" +
                 $"Solving Time : {_solver.SolvingTime}ms\n" +
-                $"Num Evaluated Nodes: {Node.NodesAlreadyEvaluated}\n" +
-                $"Num Nodes in Tree: {Node.NodesInTree}");
+                $"Nodes already evaluated: {Node.NodesAlreadyEvaluated}\n" +
+                $"Nodes in Tree: {Node.NodesInTree}");
         }
 
         private void _solver_OnSolvingCompleted()
